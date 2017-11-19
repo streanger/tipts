@@ -1,4 +1,3 @@
-
 #!/bin/python
 #run with python3
 
@@ -7,12 +6,16 @@ from time import sleep
 from sys import argv
 
 class buzz:
-    def __init__(self, buzzPin):
+    def __init__(self, buzzPin, quietMode=False):
         self.pin = buzzPin
         self.buzz = Buzzer(buzzPin)
+        self.quietMode = quietMode
     
     def buzz_init(self, buzzPin):
         self.buzz = Buzzer(buzzPin)    
+
+    def quiet(self, mode):
+        self.quietMode = mode
 
     def set_pin(self, newPin):
         self.pin = newPin
@@ -40,11 +43,10 @@ class buzz:
                      ['aHS', 910], ['bH', 933]]
         notes = dict(notePairs)
         beepDelay = round((1000000/notes[note]))  #in miliseconds
-        times = round((duration*1000)/(beepDelay*2))
-        beepDelay = round(beepDelay/1000000,5)
-        print("note:", notes[note])
-        print("times:", times)
-        print("beepDelay:", beepDelay)
+        times = int(round((duration*1000)/(beepDelay*2)))
+        beepDelay = round(beepDelay/1000000,6)
+        if not self.quietMode:
+            print("note:%d| times: %d| beepDelay[ms]:%f" % (notes[note], times, beepDelay))
         for x in range(times):
             self.buzz.on()
             sleep(beepDelay)
@@ -63,7 +65,7 @@ class buzz:
         self.buzz.toggle()
 def songs(title="starwars"):
     if title == "starwars":
-        print("starwars")
+        print("--< title: starwars")
         song = [("a", 500),
                 ("a", 500),
                 ("f", 350),
@@ -93,8 +95,60 @@ def songs(title="starwars"):
                 ("gH", 250),
                 ("fHS", 125),
                 ("fH", 125),
-                ("fHS", 250)]
+                ("fHS", 250),
+                
+                ("delay", 0.250),
 
+                ("aS", 250),
+                ("dHS", 500),
+                ("dH", 250),
+                ("cHS", 250),
+                ("cH", 125),
+                ("b", 125),
+                ("cH", 250),
+                
+                ("delay", 0.250),
+
+                ("f", 125),
+                ("gS", 500),
+                ("f", 375),
+                ("a", 125),
+                ("cH", 500),
+
+                ("a", 375),
+                ("cH", 125),
+                ("eH", 1000),
+                ("aH", 500),
+                ("a", 350),
+
+                ("a", 150),
+                ("aH", 500),
+                ("gHS", 250),
+                ("gH", 250),
+                ("fHS", 125),
+                ("fH", 125),
+                ("fHS", 250),
+                
+                ("delay", 0.250),
+
+                ("aS", 250),
+                ("dHS", 500),
+                ("dH", 250),
+                ("cHS", 250),
+                ("cH", 125),
+                ("b", 125),
+                ("cH", 250),
+
+                ("delay", 0.250),
+                
+                ("f", 250),
+                ("gS", 500),
+                ("f", 375),
+                ("cH", 125),
+                ("a", 500),
+                ("f", 375),
+                ("c", 125),
+                ("a", 1000)]
     else:
         print("only one song for now :(")
 
@@ -103,14 +157,17 @@ def songs(title="starwars"):
 def play_melody(buzz, song):
     #buzz is buzzer object
     #song is just a two dimension list
-    print("start a song")
+    print("--< start a song")
     for note in song:
+        if (note[0] == "delay"):
+            sleep(note[1])
+            continue
         buzz.sound(note[0], note[1])
-    print("song finished")        
+    print("--< song finished")        
     
 #args = argv[1:]
 #print(args)
 
 buzz = buzz(12)
+buzz.quiet(False)
 play_melody(buzz, songs())
-
