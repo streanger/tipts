@@ -1,18 +1,16 @@
-#run with using pyhton3
-#still in develop :)
-#need to clean this up and make usefull :)
+#!/usr/bin/python3
+#fixed somehow :)
 import glob
-import getopt
 from sys import argv, version, exit
 
-def unique_man(defaultPorts=[]):
+def manual():
     #default_ports should contain all ports available without any external devices
-    if not defaultPorts:
-        defaultPorts = find_default_ports()
-        #defaultPorts = ['/dev/ttyprintk', '/dev/ttyS31', '/dev/ttyS30', '/dev/ttyS29', '/dev/ttyS28', '/dev/ttyS27', '/dev/ttyS26', '/dev/ttyS25', '/dev/ttyS24', '/dev/ttyS23', '/dev/ttyS22', '/dev/ttyS21', '/dev/ttyS20', '/dev/ttyS19', '/dev/ttyS18', '/dev/ttyS17', '/dev/ttyS16', '/dev/ttyS15', '/dev/ttyS14', '/dev/ttyS13', '/dev/ttyS12', '/dev/ttyS11', '/dev/ttyS10', '/dev/ttyS9', '/dev/ttyS8', '/dev/ttyS7', '/dev/ttyS6', '/dev/ttyS5', '/dev/ttyS4', '/dev/ttyS3', '/dev/ttyS2', '/dev/ttyS1', '/dev/ttyS0']
-    ports = all_ports()
+    input("Unplug all virtual port(s) and press enter...")
+    defaultPorts = all_ports()
+    input("Connect virtual port(s) and press enter...")
+    allPorts = all_ports()
     unique = []
-    for item in ports:
+    for item in allPorts:
         if not (item in defaultPorts):
             unique.append(item)
     return unique
@@ -20,45 +18,37 @@ def unique_man(defaultPorts=[]):
 def all_ports():
     return glob.glob("/dev/tty[A-Za-z]*")
 
-def auto_find():
-    return glob.glob("/dev/ttyUSB*")
-
-def named_ports(name):
+def by_name(name):
     specified = "/dev/tty" + name + "*"
     return  glob.glob(specified)
 
-def find_default_ports():
-    input("Unplug all virtual port(s) and press enter...")
-    defaultPorts = glob.glob("/dev/tty[A-Za-z]*")
-    input("Connect virtual port(s)")
-    return defaultPorts
+def help():
+	print("Usage:")
+	print("  -a, --all -> print all ports")
+	print("  -m, --manual -> need to unplug specified device and plug after all")
+	print("  -n [string], --name [string] -> with some name e.g. USB")
+	print("  -o, --auto -> USB name on default")
 
 def main(argv):
-    ports = []
-    if version[0] == "2":
-        print("--< please run with python3")
+    if (version[0] == "2"):
+        print("Please run python3...")
         exit()
+    ports = []
     try:
-        opts, args = getopt.getopt(argv, "h:u:a:",
-        ["help", "unique", "all"])
-    except getopt.GetoptError as err:
-        print(str(err))
-        opts = ('-h')
-    for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            print("usage:")
-            print("--all -> print all ports")
-            print("--unique -> need to unplug specified device and plug after all")
-            print("--name -> with some name e.g. USB")
-            print("--auto -> USB name on default")
-            exit()
-        elif opt in '-u':
-            ports = named_ports(arg)
-        elif opt in '-a':
+        if argv[0] in ("-a", "--all"):
             ports = all_ports()
+        elif argv[0] in ("-m", "--manual"):
+            ports = manual()
+        elif argv[0] in ("-o, --auto"):
+            ports = by_name("USB")
+        elif argv[0] in ("-n", "--name"):
+            ports = by_name(argv[1])
+    except:
+        help()
+        exit()
+    return ports
 
-    #find ports in different way and print after all
-    print("--<",ports)
 
 if __name__=="__main__":
-    main(argv[1:])
+    ports = main(argv[1:])
+    print("Ports: ", ports)
