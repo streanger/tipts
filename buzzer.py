@@ -1,5 +1,4 @@
-#!/bin/python
-#run with python3
+#!/usr/bin/python3
 
 from gpiozero import Buzzer
 from time import sleep
@@ -21,6 +20,20 @@ class buzz:
         self.pin = newPin
         self.buzz = Buzzer(newPin)
    
+    def notes_range(self, up=True, duration=250):
+        for x in range(1,1000):
+            if up:
+                beepDelay=x
+            else:
+                beepDelay=1000-x
+            for times in duration():
+                self.buzz.on()
+                sleep(beepDelay)
+                self.buzz.off()
+                sleep(beepDelay)
+            self.buzz.off()
+            sleep(0.01) #some delay between notes
+    
     def sound(self, note, duration):
         #notes etc
         notePairs = [['cL', 129], ['cLS', 139],
@@ -63,6 +76,8 @@ class buzz:
         sleep(duration)
         print(duration)
         self.buzz.toggle()
+
+
 def songs(title="starwars"):
     if title == "starwars":
         print("--< title: starwars")
@@ -163,11 +178,18 @@ def play_melody(buzz, song):
             sleep(note[1])
             continue
         buzz.sound(note[0], note[1])
-    print("--< song finished")        
-    
-#args = argv[1:]
-#print(args)
+    print("--< song finished")
 
-buzz = buzz(12)
-buzz.quiet(False)
-play_melody(buzz, songs())
+
+if __name__=="__main__":
+    args = argv[1:]
+    buzz = buzz(12)
+    buzz.quiet(False)
+    play_melody(buzz, songs())
+
+    buzz.notes_range(up=True, 250)
+    buzz.notes_range(up=False, 400)
+
+
+
+
