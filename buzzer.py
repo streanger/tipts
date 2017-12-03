@@ -26,7 +26,9 @@ class buzz:
                 beepDelay=x
             else:
                 beepDelay=1000-x
-            for times in duration():
+            times = int(round(duration/beepDelay))
+            beepDelay = round((beepDelay)/1000, 6)
+            for y in range(times):
                 self.buzz.on()
                 sleep(beepDelay)
                 self.buzz.off()
@@ -186,10 +188,3 @@ if __name__=="__main__":
     buzz = buzz(12)
     buzz.quiet(False)
     play_melody(buzz, songs())
-
-    buzz.notes_range(up=True, 250)
-    buzz.notes_range(up=False, 400)
-
-
-
-
