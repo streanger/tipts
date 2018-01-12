@@ -26,6 +26,12 @@ def draw_chart(data1, data2):
 
 def read_parameters(fileName):
     parameters = []
+    parameter = []
+    path = os.path.join(get_dir(), fileName)
+    with open(path, "r") as file:
+        content = file.read().splitlines()
+    for index, line in enumerate(content):
+        parameters.append(line.split())
     return parameters
 
 def get_dir(fileName=""):
@@ -67,16 +73,16 @@ def write_file(fileName, content, addNewline="\n", response=True, removeSign=[])
 
 def usage():
     print('''Example of get_gauss usage:
---< python3 get_gauss.py parameters.txt fileOut.txt
---< where parameters lookslike:
---<  <Name>    <elements>   <top>   <sigma>
---< param.txt     200        40        2''')
+--< python3 get_gauss.py parameters.txt gauss_data.txt
+--< where parameters looks like:
+--<  <Name>     <center>  <elements>  <sigma>
+--< Gauss_dist     40        200         2''')
     print("--< for more go to: %s" % colored("https://github.com/streanger", "cyan"))
     print("\n" + 16*"<*>" + "\n")
 
 def main(argIn):
     fileOut = "gauss_data.txt"
-    fileIn = ""
+    fileIn = "parameters.txt"
     if argIn:
         try:
             fileIn = argIn[0]
@@ -84,23 +90,30 @@ def main(argIn):
         except:
             print("--< wrong parameters!")
             usage()
+            return False
     else:
         usage()
+    print("--< trying with: %s(%s), %s(%s)" % (fileIn, colored("fileIn", "cyan"),
+                                               fileOut,colored("fileOut", "cyan")))
     parameters = read_parameters(fileIn)
+    totalValues = []
     for param in parameters:
-        values = get_gauss(elements=500, top=40, sigma=2, roundValue=0)
-        write_file(fileOut,
-                   values,
-                   addNewline=True,
-                   response=True,
-                   removeSign=["(",")"])
-    print("--< finished")
+        values = get_gauss(elements=int(param[2]),
+                           top=float(param[1]),
+                           sigma=float(param[3]),
+                           roundValue=2,
+                           distName=param[0])
+        totalValues += values
+        totalValues.append("\n"+20*"-"+"\n")
+    write_file(fileOut,
+               totalValues,
+               addNewline=True,
+               response=True,
+               removeSign=["(",")"])
     #args, value = zip(*values[1:]) #starts from 1 'cause 0 is name
     #draw_chart(args, value)
 
 
 if __name__=="__main__":
     main(sys.argv[1:])
-
-
 
