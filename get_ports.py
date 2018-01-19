@@ -19,8 +19,9 @@ def all_ports():
     return glob.glob("/dev/tty[A-Za-z]*")
 
 def by_name(name):
-    specified = "/dev/tty" + name + "*"
-    return  glob.glob(specified)
+    print("Trying with:", name) 
+    specified = [x for x in all_ports() if (name in x)]
+    return specified
 
 def help():
 	print("Usage:")
