@@ -1,21 +1,21 @@
 #!/usr/bin/python3
-#simple shell window chart generator
+#simple shell window chart generator; chr(4043)
 import random
 from collections import Counter
-print("\n" + 20*"<*>" + "\n")
 
-def histogram():
-    print("use this for histograms")
 
 def shift_list(l, n):
-        return l[n:] + l[:n]
+    return l[n:] + l[:n]
 
 def replace(s, pos, sign):
-    return "".join(list(s)[:pos]+[sign]+list(s)[pos+1:])
+    l = list(s)
+    l = l[:pos] + [sign] + l[pos+1:]
+    replaced = "".join(l)
+    return replaced
+    #return "".join(list(s)[:pos]+[sign]+list(s)[pos+1:]) #may cause memory error :) 
 
 def get_gauss(elements=20, top=15, sigma=2):
     values = Counter([round(random.gauss(top, sigma)) for x in range(elements)])
-    #values = Counter(values)
     values = list(values.items())
     return values
 
@@ -25,10 +25,9 @@ def some_chart(data=[]):
     else:
         xline = get_xline(data)
     lines = []
-    yV = max([x[1] for x in data]) + 5 
+    yV = (round(max([x[1] for x in data])//5)+1)*5
     xV = 80
     SQ = chr(0x25a0)
-    print(data)
     for x in range(yV):
         yrange = str(yV-x)
         line = " "*(3-len(str(yV-x))) + yrange + "|" + (len(xline)-5)*" "
@@ -36,11 +35,7 @@ def some_chart(data=[]):
             xpos = xline.find(str(key))
             ypos = value
             if ypos >= int(yrange):
-                #line = line[:xpos] + SQ
                 line = replace(line, xpos, SQ)
-                #pass 
-            #print(xpos, ypos)
-        #lines.append(line + SQ*(x))
         lines.append(line)
     lines.append(2*" " + "0|" + len(xline)*"_")
     lines.append(xline)
@@ -59,12 +54,8 @@ def get_xline(data):
     else:
         return ""
 
-def ascii_signs():
-    print(chr(4043))
-
 
 if __name__=="__main__":
-    gauss = get_gauss(elements=40, top=10, sigma=1)
+    gauss = get_gauss(elements=100, top=10, sigma=2)
     some_chart(data=gauss)
-
 
