@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-#simple shell window chart generator; chr(4043)
+#simple shell window chart generator by some stranger
 import random
 from collections import Counter
 
@@ -22,19 +22,19 @@ def get_gauss(elements=20, top=15, sigma=2):
 def some_chart(data=[]):
     if not data:
         return False
-    else:
-        xline = get_xline(data)
+    if type(data) is dict:
+        data = list(data.items())
+    xline = get_xline(data)
     lines = []
     yV = (round(max([x[1] for x in data])//5)+1)*5
-    xV = 80
     SQ = chr(0x25a0)
     for x in range(yV):
-        yrange = str(yV-x)
-        line = " "*(3-len(str(yV-x))) + yrange + "|" + (len(xline)-5)*" "
+        yrange = yV-x
+        line = " "*(3-len(str(yV-x))) + str(yrange) + "|" + (len(xline)-5)*" "
         for key, value in data:
             xpos = xline.find(str(key))
             ypos = value
-            if ypos >= int(yrange):
+            if ypos >= yrange:  #try with reverse condition
                 line = replace(line, xpos, SQ)
         lines.append(line)
     lines.append(2*" " + "0|" + len(xline)*"_")
@@ -43,8 +43,7 @@ def some_chart(data=[]):
         print(line)
 
 def get_xline(data):
-    #make it for both dictio & lists
-    xvalues = [x[0] for x in data]
+    xvalues = [int(x[0]) for x in data]
     xvalues.sort()
     xline = 5*" "
     for item in xvalues:
@@ -57,5 +56,5 @@ def get_xline(data):
 
 if __name__=="__main__":
     gauss = get_gauss(elements=100, top=10, sigma=2)
-    some_chart(data=gauss)
+    some_chart(data=gauss)  #can put list of list(tuples) or dictio
 
