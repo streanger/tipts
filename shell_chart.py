@@ -19,7 +19,7 @@ def get_gauss(elements=20, top=15, sigma=2):
     values = list(values.items())
     return values
 
-def some_chart(data=[]):
+def some_hist(data=[]):
     if not data:
         return False
     if type(data) is dict:
@@ -56,5 +56,5 @@ def get_xline(data):
 
 if __name__=="__main__":
     gauss = get_gauss(elements=100, top=10, sigma=2)
-    some_chart(data=gauss)  #can put list of list(tuples) or dictio
+    some_hist(data=gauss)  #can put list of list(tuples) or dictio
 
