@@ -2,7 +2,29 @@
 #simple hist chart by some stranger
 import random
 import sys
+import os
 from collections import Counter
+
+
+def read_file(fileName, rmnl=False):
+    try:
+        os.chdir(os.path.dirname(__file__))
+    except:
+        os.path.dirname(os.path.abspath(__file__))
+    pathAbs = os.getcwd()
+    path = os.path.join(pathAbs, fileName)
+    try:
+        with open(path, "r") as file:
+            if rmnl:
+                fileContent = file.read().splitlines()
+            else:
+                fileContent = file.readlines()
+            for item in fileContent:
+                if not item.isnumeric():
+                    fileContent.remove(item)
+    except:
+        fileContent = []
+    return fileContent
 
 def get_gauss(elements=20, top=15, sigma=2):
     values = Counter([round(random.gauss(top, sigma)) for x in range(elements)])
@@ -10,6 +32,7 @@ def get_gauss(elements=20, top=15, sigma=2):
     return values
 
 def some_hist(data=[]):
+    #make some function to filter input data
     if not data:
         return False
     if type(data) is dict:
@@ -20,6 +43,7 @@ def some_hist(data=[]):
         data = list(Counter(data).items())
     xline = get_xline(data)
     yV = (round(max([x[1] for x in data])//5)+1)*5
+
     SQ = chr(0x25a0)
     lines = []
     for x in range(yV):
@@ -43,18 +67,21 @@ def get_xline(data):
     return xline
 
 def example():
-    gauss = get_gauss(elements=100, top=10, sigma=2)
+    gauss = get_gauss(elements=800, top=59, sigma=6)
     #gauss = [5,6,4,5,6,3,4,3,5,6,7,4,5,6,5,4,5,6]
     return gauss
 
 def get_opt(args):
+    #fix this one
+
     #print(args)
-    #can put list of list(tuples) or dictio
-    #or just random data in file
+    #can put list of list(tuples) or dictio or just random data in file
     data = example()
+    #fileName = args[0]
+    #data = read_file("data.txt", rmnl=True)
     return data
 
 if __name__=="__main__":
-    gauss = get_opt(sys.argv[1:])
-    some_hist(data=gauss)
+    dataIn = get_opt(sys.argv[1:])
+    some_hist(data=dataIn)
 
