@@ -31,7 +31,7 @@ def get_gauss(elements=20, top=15, sigma=2):
     values = list(values.items())
     return values
 
-def some_hist(data=[]):
+def some_hist(data=[], background=False):
     #make some function to filter input data
     if not data:
         return False
@@ -54,6 +54,10 @@ def some_hist(data=[]):
             ypos = value
             if ypos >= yrange:  #try with reverse condition
                 line[xpos] = SQ
+        if background:
+            for x,y in enumerate(line):
+                if y == " ":
+                    line[x] = chr(721)   #puy any sign you want to
         lines.append("".join(line))
     lines.append(2*" " + "0|" + len(xline)*"_")
     lines.append(xline)
@@ -67,7 +71,7 @@ def get_xline(data):
     return xline
 
 def example():
-    gauss = get_gauss(elements=800, top=59, sigma=6)
+    gauss = get_gauss(elements=600, top=50, sigma=6)
     #gauss = [5,6,4,5,6,3,4,3,5,6,7,4,5,6,5,4,5,6]
     return gauss
 
@@ -77,11 +81,15 @@ def get_opt(args):
     #print(args)
     #can put list of list(tuples) or dictio or just random data in file
     data = example()
+    if "-b" in args:
+        background=True
+    else:
+        background=False
     #fileName = args[0]
     #data = read_file("data.txt", rmnl=True)
-    return data
+    return data, background
 
 if __name__=="__main__":
-    dataIn = get_opt(sys.argv[1:])
-    some_hist(data=dataIn)
+    dataIn, back = get_opt(sys.argv[1:])
+    some_hist(data=dataIn, background=back)
 
