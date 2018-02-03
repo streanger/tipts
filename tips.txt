@@ -1,0 +1,7 @@
+#things you should have know:
+
+-use pylint tool to analyze your python code (pip3 install pylint; I should to use it too :))
+-use functions instead of copying the same part of codes
+-use arguments in to make your scripts flexible
+-remember about PEP8 and zen_of_python
+-
