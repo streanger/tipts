@@ -81,14 +81,18 @@ def write_file(fileName, content, addNewline="\n", response=True, removeSign=[])
     return result
 
 def usage():
-    print('''Example of get_gauss usage:
+    print('''--< Usage with fileIn, fileOut:
 --< python3 get_gauss.py parameters.txt gauss_data.txt
---< where parameters looks like:
+--< parameters in file:
 --<  <Name>     <center>  <elements>  <sigma>
 --< Gauss_dist     40        200         2
---< -q(center,elements,sigma) -r2 -> to print data in command line''')
+--<
+--< Quick line usage:
+--< -q(center,elements,sigma) -> e.g. -q10,5,1 to print data in command line
+--< -rV -> e.g -r2 round value
+--< -v -> print data vertical, if none print as list''')
     print("--< for more go to: %s" % colored("https://github.com/streanger", "cyan"))
-    print("\n" + 16*"<*>" + "\n")
+    print(16*"<*>" + "\n")
 
 def main(argIn):
     fileOut = "gauss_data.txt"
