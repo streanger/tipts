@@ -88,7 +88,7 @@ def usage():
 --< Gauss_dist     40        200         2
 --<
 --< Quick line usage:
---< -q(center,elements,sigma) -> e.g. -q10,5,1 to print data in command line
+--< -q(elements,center,sigma) -> e.g. -q10,5,1 to print data in command line
 --< -rV -> e.g -r2 round value
 --< -v -> print data vertical, if none print as list''')
     print("--< for more go to: %s" % colored("https://github.com/streanger", "cyan"))
