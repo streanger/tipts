@@ -10,11 +10,20 @@ def get_gauss(elements=50, top=10, sigma=1, roundValue=2, distName="Gauss distri
     values = []
     for x in range(elements):
         values.append(round(random.gauss(top, sigma), roundValue))
-    values = Counter(values)
-    values = list(values.items())
-    #values = sorted(values, key=lambda x: (x[0]))
+    #values = list((Counter(values)).items()) #uncomment this for counter values
     values.insert(0, distName)
     return values
+
+def line_gauss(elements=20, top=15, sigma=2, rValue=0, vertical=False):
+    #this is kind of shit but works
+    VALUES = []
+    if not rValue:
+        VALUES = [round(random.gauss(float(top), float(sigma))) for x in range(int(elements))]
+    else:
+        VALUES = [round(random.gauss(float(top), float(sigma)),rValue) for x in range(int(elements))]
+    if vertical:
+        VALUES = "\n".join([str(item) for item in VALUES])
+    return VALUES
 
 def draw_chart(data1, data2):
     plt.plot(data1, data2)
@@ -76,7 +85,8 @@ def usage():
 --< python3 get_gauss.py parameters.txt gauss_data.txt
 --< where parameters looks like:
 --<  <Name>     <center>  <elements>  <sigma>
---< Gauss_dist     40        200         2''')
+--< Gauss_dist     40        200         2
+--< -q(center,elements,sigma) -r2 -> to print data in command line''')
     print("--< for more go to: %s" % colored("https://github.com/streanger", "cyan"))
     print("\n" + 16*"<*>" + "\n")
 
@@ -84,6 +94,27 @@ def main(argIn):
     fileOut = "gauss_data.txt"
     fileIn = "parameters.txt"
     if argIn:
+        elements = rValue = 0
+        vertical = False
+        for item in  argIn:
+            if "-q" in item:
+                try:
+                    elements, top, sigma = item[2:].split(",")
+                except:
+                    pass
+            if "-r" in item:
+                try:
+                    rValue = int(item[2:])
+                except:
+                    pass
+            if "-v" in item:
+                vertical = True
+        if elements:
+            try:
+                print(line_gauss(elements, top, sigma, rValue, vertical))
+                return True
+            except:
+                return False
         try:
             fileIn = argIn[0]
             fileOut = argIn[1]
