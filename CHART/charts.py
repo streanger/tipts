@@ -38,12 +38,36 @@ def find_extreme(data=[]):
         LOCAL = []
     return LOCAL_MIN, LOCAL_MAX
 
-def ext_filter(LMIN, LMAX):
+def verify_ext(EXT_LIST, data, LOOK_FOR = "MIN"):
+    TRUE_EXT = []
+    SIDES = []
+    for item in EXT_LIST:
+        #this range casues difference with searching
+        for x in range(-2,3):
+            SIDE = data[data.index(item)+x]
+            SIDES.append(SIDE)
+        #print(SIDES)
+        if LOOK_FOR.lower() == "min":
+            if min(SIDES) == item:
+                TRUE_EXT.append(item)
+        elif LOOK_FOR.lower() == "max":
+            if max(SIDES) == item:
+                TRUE_EXT.append(item)
+        else:
+            return []
+        SIDES = []
+    return TRUE_EXT
+
+def ext_filter(LMIN, LMAX, data):
+    #data - full data which contains LMIN & LMAX values
     cMIN = Counter([item[0] for item in LMIN])
     cMAX = Counter([item[0] for item in LMAX])
-    #figure out if min/max value is true extremum
+    topMIN = [x[0] for x in cMIN.most_common(5)]
+    topMAX = [x[0] for x in cMAX.most_common(5)]
+    TRUE_MIN = verify_ext(topMIN, data, "min")
+    TRUE_MAX = verify_ext(topMAX, data, "max")
 
-    return 42
+    return TRUE_MIN, TRUE_MAX
 
 def create_data():
     data1 = [x for x in range(100)]
@@ -79,6 +103,7 @@ if __name__ == "__main__":
     draw_chart(data1, data)
 
     LMIN, LMAX = find_extreme(data)
-    ext_filter(LMIN, LMAX)
-
+    TRUE_MIN, TRUE_MAX = ext_filter(LMIN, LMAX, data)
+    print(TRUE_MIN)
+    print(TRUE_MAX)
 
