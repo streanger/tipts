@@ -68,7 +68,8 @@ def verify_ext(EXT_LIST, data, LOOK_FOR = "MIN"):
         duplicates += find_duplicate(item, data)
     for key, value in duplicates:
         #this range casues difference with searching
-        for x in range(-7, 8):
+        #for x in range(-7, 8):
+        for x in range(-3, 4):
             SIDE = data[key+x]
             SIDES.append(SIDE)
         if LOOK_FOR.lower() == "min":
@@ -108,8 +109,8 @@ def ext_filter(LMIN, LMAX, data, rmNegative=False):
     #data - full data which contains LMIN & LMAX values
     cMIN = Counter([item[0] for item in LMIN])  #use item[1] rather than item[0]
     cMAX = Counter([item[0] for item in LMAX])
-    topMIN = [x[0] for x in cMIN.most_common(10)]   #ostatnia wartość w nawiasie -> parameter do sterowania; poniżej analogicznie
-    topMAX = [x[0] for x in cMAX.most_common(10)]
+    topMIN = [x[0] for x in cMIN.most_common(100)]   #ostatnia wartość w nawiasie -> parameter do sterowania; poniżej analogicznie
+    topMAX = [x[0] for x in cMAX.most_common(100)]
     if rmNegative:
         posMIN = [x for x in topMIN if x > 0]   #data[x] rather than x
         posMAX = [x for x in topMAX if x > 0]
@@ -145,23 +146,19 @@ def create_data():
              510.61, 465.07, 434.98, 380.34, 346.14, 287.36, 238.01, 189.09, 131.61, 66.57]
     return data2
 
-#dy = calc_diff(data2)
-#dy2 = calc_diff(dy)
-#draw_chart(data1, data2)
-#draw_chart(data1[2:], dy2)
 
 if __name__ == "__main__":
-    data1 = [x for x in range(11662)] #8764; 11662
     #data = create_data()
-
     #data = read_file("esc_force.txt", rmnl=True)
     data = read_file("esc2_force.txt", rmnl=True)
-    data = [round(float(x), 2) for x in data]
-    draw_chart(data1, data)
+    data = [round(float(x), 3) for x in data]
+    data1 = [x for x in range(len(data))]
 
     LMIN, LMAX = find_extreme(data)
-    #print(LMIN, LMAX)
     TRUE_MIN, TRUE_MAX = ext_filter(LMIN, LMAX, data, rmNegative=True)
     print("Locals min:", TRUE_MIN)
     print("Locals max:", TRUE_MAX)
 
+    ask = input("draw chart? (yes/no)\n")
+    if ask.lower() == "yes":
+        draw_chart(data1, data)
