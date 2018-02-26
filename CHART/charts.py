@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import random
 import math
 import os
+import sys
 
 from numpy import diff
 from collections import Counter
@@ -24,12 +25,19 @@ def read_file(fileName, rmnl=False):
         fileContent = []
     return fileContent
 
-def draw_chart(data1, data2):
+def draw_chart(data1, data2, markerMin = [], markerMax = []):
     plt.plot(data1, data2)
     plt.ylabel("N pomiarów")
     plt.xlabel("Rozkład wartości")
     plt.grid()
-    #print(dir(plt))
+    if markerMin:
+        for item in markerMin[:3]:
+            plt.plot(item[0], item[1], 'ro', markersize=6)
+            plt.plot(item[0], item[1], 'w+', markersize=6)        
+    if markerMax:
+        for item in markerMax[:3]:
+            plt.plot(item[0], item[1], 'go', markersize=6)
+            plt.plot(item[0], item[1], 'w+', markersize=6)
     plt.show()
     #save image in some way
 
@@ -47,7 +55,7 @@ def find_extreme(data=[]):
     LOCAL_MAX = []
     LOCAL_MIN = []
     LOCAL = []
-    LOCAL_RANGE = 200    #parametr do sterowania
+    LOCAL_RANGE = 200    #parametr do sterowania 200
     for key, value in enumerate(data[1:-LOCAL_RANGE+2]):
         for x in range(LOCAL_RANGE):
             LOCAL.append(data[key+x])
@@ -68,8 +76,8 @@ def verify_ext(EXT_LIST, data, LOOK_FOR = "MIN"):
         duplicates += find_duplicate(item, data)
     for key, value in duplicates:
         #this range casues difference with searching
-        #for x in range(-7, 8):
-        for x in range(-3, 4):
+        #for x in range(-10, 11):
+        for x in range(-5, 6):
             SIDE = data[key+x]
             SIDES.append(SIDE)
         if LOOK_FOR.lower() == "min":
@@ -147,18 +155,21 @@ def create_data():
     return data2
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  
     #data = create_data()
     #data = read_file("esc_force.txt", rmnl=True)
-    data = read_file("esc2_force.txt", rmnl=True)
+    #data = read_file("esc2_force.txt", rmnl=True)
+    data = read_file("esc3_force.txt", rmnl=True)
     data = [round(float(x), 3) for x in data]
     data1 = [x for x in range(len(data))]
 
     LMIN, LMAX = find_extreme(data)
-    TRUE_MIN, TRUE_MAX = ext_filter(LMIN, LMAX, data, rmNegative=True)
+    TRUE_MIN, TRUE_MAX = ext_filter(LMIN, LMAX, data, rmNegative=True)  #rmNegative=True
     print("Locals min:", TRUE_MIN)
     print("Locals max:", TRUE_MAX)
 
     ask = input("draw chart? (yes/no)\n")
     if ask.lower() == "yes":
-        draw_chart(data1, data)
+        draw_chart(data1, data, TRUE_MIN, TRUE_MAX)
+
+        
