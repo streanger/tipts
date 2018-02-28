@@ -35,6 +35,9 @@ def read_file(fileName, rmnl=False):
         fileContent = []
     return fileContent
 
+def read_bin(fileName):
+    print("to be done")
+
 def draw_chart(data1, data2, markerMin = [], markerMax = []):
     plt.plot(data1, data2)
     plt.ylabel("Force[N]")
@@ -67,8 +70,6 @@ def find_extreme(data=[]):
     if (not data) or (not type(data) is list):
         print("no data or wrong type...")
         exit()
-    GLOBAL_MAX = max(data)
-    GLOBAL_MIN = min(data)
     LOCAL_MAX = []
     LOCAL_MIN = []
     LOCAL = []
@@ -135,18 +136,14 @@ def verify_ext(EXT_LIST, data, LOOK_FOR = "MIN"):
     return TRUE_EXT
 
 def average(data):
-    sumOf = 0
-    for item in data:
-        sumOf += float(item)
-    return sumOf/len(data)
+    return (sum(data) / float(len(data)))
 
 def remove_horizontal(data, diff = 0.1, decPoint=3):
-    #manipulate here to shrink chart
+    #shrink chart from both sides
     LOCAL = []
     for key, item in enumerate(data):
         LOCAL.append(item)
         if key%50 == 0:    #parameter
-            #print("difference:", abs(float(item) - average(LOCAL)))
             if abs(float(item) - average(LOCAL)) > diff[0]:
                 startKey = key
                 break
@@ -154,13 +151,11 @@ def remove_horizontal(data, diff = 0.1, decPoint=3):
     for key, item in enumerate(data[::-1]):
         LOCAL.append(item)
         if key%50 == 0:    #parameter
-            #print("difference:", abs(float(item) - average(LOCAL)))
             if abs(float(item) - average(LOCAL)) > diff[1]:
                 stopKey = len(data) - key
                 break
     OFFSET = -float(data[startKey])
     dataCut = [round(float(x) + OFFSET, decPoint) for x in data[startKey:stopKey]]  #data with offset
-    #dataCut = data[startKey:stopKey]
     return dataCut, startKey
 
 def ext_filter(LMIN, LMAX, data, elements):
@@ -169,9 +164,6 @@ def ext_filter(LMIN, LMAX, data, elements):
 
     TRUE_MIN = verify_ext(topMIN, data, "min")[:elements]
     TRUE_MAX = verify_ext(topMAX, data, "max")[:elements]
-
-    #TRUE_MIN = TRUE_MIN[:elements]
-    #TRUE_MAX = TRUE_MAX[:elements]
 
     TRUE_MIN.sort(key=lambda tup: tup[0])   #sort by 1st element of tuple
     TRUE_MAX.sort(key=lambda tup: tup[0])
@@ -185,9 +177,11 @@ def main(commands):
     except:
         filename = ""
     if not filename:
-        data = [round(10*(math.sin(math.pi*x/100)), 2)+12 for x in range(5000)]
+        zeroPoint = 0
+        data = [round(5*(math.sin(math.pi*x/100)), 2)+6 for x in range(1000)]
     else:
         data = read_file(filename, rmnl=True)
+        data = [float(item) for item in data]   #string -> float
         if not data:
             print("non-file or empty one...")
             exit()
