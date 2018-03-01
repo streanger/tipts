@@ -28,15 +28,9 @@ def read_file(fileName, rmnl=False):
                 fileContent = file.read().splitlines()
             else:
                 fileContent = file.readlines()
-        #in case of data separated by coma, with no \n
-        #if "," in fileContent[0]:
-        #    fileContent = (fileContent[0].split(','))[:-1]  #and remove the last one
     except:
         fileContent = []
     return fileContent
-
-def read_bin(fileName):
-    print("to be done")
 
 def draw_chart(data1, data2, markerMin = [], markerMax = []):
     plt.plot(data1, data2)
@@ -93,7 +87,7 @@ def verify_ext(EXT_LIST, data, LOOK_FOR = "MIN"):
     for item in EXT_LIST:
         duplicates += find_duplicate(item, data)
     for key, value in duplicates:
-        for x in range(-5, 6):  #parameter
+        for x in range(-4, 5):  #parameter
             try:
                 SIDE = data[key+x]
                 SIDES.append(SIDE)
@@ -109,14 +103,31 @@ def verify_ext(EXT_LIST, data, LOOK_FOR = "MIN"):
             return []
         SIDES = []
 
-    EXT_INSIDE = []
-    EXT_INSIDE = [item[1] for item in TRUE_EXT if not item[1] in EXT_INSIDE]
+#this one:
 
+    #EXT_INSIDE = []
+    #EXT_INSIDE = [item[1] for item in TRUE_EXT if not item[1] in EXT_INSIDE]
+    #EXT_SIDES = [[thing for thing in TRUE_EXT if item == thing[1]] for item in EXT_INSIDE]
+
+#and this one:
+#casue different results; fix it and any other related things
+
+    EXT_INSIDE = []
+    for item in TRUE_EXT:
+        if not item[1] in EXT_INSIDE:
+            EXT_INSIDE.append(item[1])
+    #print("EXT_INSIDE:", EXT_INSIDE)
     EXT_SIDES = []
     for item in EXT_INSIDE:
-        SIDE = [thing for thing in TRUE_EXT if item == thing[1]]
+        SIDE = []
+        for thing in TRUE_EXT:
+            if item == thing[1]:
+                SIDE.append(thing)
         EXT_SIDES.append(SIDE)
         SIDE = []
+    #print("EXT_SIDES:", EXT_SIDES)
+
+
 
     TRUE_EXT = []
     for item in EXT_SIDES:
@@ -158,12 +169,17 @@ def remove_horizontal(data, diff = 0.1, decPoint=3):
     dataCut = [round(float(x) + OFFSET, decPoint) for x in data[startKey:stopKey]]  #data with offset
     return dataCut, startKey
 
+def remove_duplicates(data):
+    return list(set(data))
+
 def ext_filter(LMIN, LMAX, data, elements):
     topMIN = [x[0] for x in (Counter([item[0] for item in LMIN])).most_common(100)]  #parameter
     topMAX = [x[0] for x in (Counter([item[0] for item in LMAX])).most_common(100)]
 
     TRUE_MIN = verify_ext(topMIN, data, "min")[:elements]
     TRUE_MAX = verify_ext(topMAX, data, "max")[:elements]
+    print("TRUE_MIN:", TRUE_MIN)
+    print("TRUE_MAX:", TRUE_MAX)
 
     TRUE_MIN.sort(key=lambda tup: tup[0])   #sort by 1st element of tuple
     TRUE_MAX.sort(key=lambda tup: tup[0])
@@ -181,21 +197,26 @@ def main(commands):
         data = [round(5*(math.sin(math.pi*x/100)), 2)+6 for x in range(1000)]
     else:
         data = read_file(filename, rmnl=True)
-        data = [float(item) for item in data]   #string -> float
+        if "TEST.txt" in filename:
+            data = [float(item[item.find("=")+2:]) for item in data[13:-1]]
+        else:
+            data = [float(item) for item in data]
+        #print(data)
         if not data:
             print("non-file or empty one...")
             exit()
         originalData = data
-        data, zeroPoint= remove_horizontal(data, diff=(0.08, 0.1), decPoint=4)   #responses for start|stop data
+        #data, zeroPoint= remove_horizontal(data, diff=(0.08, 0.1), decPoint=3)   #responses for start|stop data
+        data, zeroPoint= remove_horizontal(data, diff=(0.08, 0.1), decPoint=3)
     data1 = [key for key, value in enumerate(data)]
 
     LMIN, LMAX = find_extreme(data)
     TRUE_MIN, TRUE_MAX = [], []
-    TRUE_MIN, TRUE_MAX = ext_filter(LMIN, LMAX, data, elements=4)  #rmNegative=True
+    TRUE_MIN, TRUE_MAX = ext_filter(LMIN, LMAX, data, elements=5)  #rmNegative=True
     TRUE_MIN.insert(0, (0, data[0]))    #add start of the chart
 
-    print("POSITIONS:",zeroPoint,zeroPoint+TRUE_MAX[0][0])
-    print("Execution time: %s [s]" % (time.time() - startUnix))
+    print("POSITIONS:%s %s" % (zeroPoint,zeroPoint+TRUE_MAX[0][0]))
+    #print("Execution time: %s [s]" % (time.time() - startUnix))
     draw_chart(data1, data, TRUE_MIN, TRUE_MAX)
 
 
