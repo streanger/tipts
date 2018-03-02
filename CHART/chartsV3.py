@@ -66,14 +66,11 @@ def find_extreme(data=[]):
         exit()
     LOCAL_MAX = []
     LOCAL_MIN = []
-    LOCAL = []
     LOCAL_RANGE = 50    #parameter
     for key, value in enumerate(data[1:-LOCAL_RANGE+2]):
-        for x in range(LOCAL_RANGE):
-            LOCAL.append(data[key+x])
+        LOCAL = [data[key+x] for x in range(LOCAL_RANGE)]
         LOCAL_MAX.append([max(LOCAL), data.index(max(LOCAL))])
         LOCAL_MIN.append([min(LOCAL), data.index(min(LOCAL))])
-        LOCAL = []
     return LOCAL_MIN, LOCAL_MAX
 
 def find_duplicate(value, data):
@@ -89,23 +86,16 @@ def verify_ext(EXT_LIST, data, LOOK_FOR = "MIN"):
     for key, value in duplicates:
         for x in range(-10, 11):    #parameter
             try:
-                SIDE = data[key+x]
-                SIDES.append(SIDE)
+                SIDES.append(data[key+x])
             except:
                 pass
         if LOOK_FOR.lower() == "min":
             if min(SIDES) == value:
-                #reject flat side(s)
-                if SIDES[0] == value or SIDES[-1] == value:
-                    pass
-                else:
+                if not (value in (SIDES[0], SIDES[-1])):    #reject flat side(s)
                     TRUE_EXT.append((key, value))
         elif LOOK_FOR.lower() == "max":
             if max(SIDES) == value:
-                #reject flat side(s)
-                if SIDES[0] == value or SIDES[-1] == value:
-                    pass
-                else:
+                if not (value in (SIDES[0], SIDES[-1])):    #reject flat side(s)
                     TRUE_EXT.append((key, value))
         else:
             return []
@@ -120,11 +110,8 @@ def verify_ext(EXT_LIST, data, LOOK_FOR = "MIN"):
         for thing in item:
             LOCAL.append(thing)
             if len(LOCAL) > 1:
-                if LOCAL[-1][0] - LOCAL[-2][0] == 1:
-                    pass
-                else:
-                    TO_APPEND = (LOCAL[:-1])[round(len(LOCAL[:-1])//2)]
-                    TRUE_EXT.append(TO_APPEND)
+                if not (LOCAL[-1][0] - LOCAL[-2][0] == 1):
+                    TRUE_EXT.append((LOCAL[:-1])[round(len(LOCAL[:-1])//2)])    #append center element
                     LOCAL = [thing]
         if LOCAL:
             TRUE_EXT.append(LOCAL[round(len(LOCAL)//2)])
@@ -155,16 +142,11 @@ def remove_horizontal(data, diff = 0.1, decPoint=3):
     return dataCut, startKey
     #fix this -> find two linear functions and calc cross index
 
-def ext_filter(LMIN, LMAX, data, elements):
-    topMIN = [x[0] for x in (Counter([item[0] for item in LMIN])).most_common(500)]  #parameter
-    topMAX = [x[0] for x in (Counter([item[0] for item in LMAX])).most_common(500)]
-
-    TRUE_MIN = verify_ext(topMIN, data, "min")[:elements-1]
-    TRUE_MAX = verify_ext(topMAX, data, "max")[:elements]
-    TRUE_MIN.sort(key=lambda tup: tup[0])   #sort by 1st element of tuple
-    TRUE_MAX.sort(key=lambda tup: tup[0])
-
-    return TRUE_MIN, TRUE_MAX
+def filter_extreme(LOCAL, data, minmax="", elements=3):
+    TOP_VAL = [x[0] for x in (Counter([item[0] for item in LOCAL])).most_common(500)]  #parameter
+    TRUE_VAL = verify_ext(TOP_VAL, data, minmax)[:elements]
+    TRUE_VAL.sort(key=lambda tup: tup[0])   #sort by 1st element of tuple
+    return TRUE_VAL
 
 def trend_data(data_x, data_y):
     a, b = linreg(data_x, data_y)
@@ -226,8 +208,10 @@ def main(commands):
     data1 = [key for key, value in enumerate(data)]
 
     LMIN, LMAX = find_extreme(data)
-    TRUE_MIN, TRUE_MAX = [], []
-    TRUE_MIN, TRUE_MAX = ext_filter(LMIN, LMAX, data, elements=10)  #rmNegative=True
+    TRUE_MIN = filter_extreme(LMIN, data, "min", elements=4)
+    TRUE_MAX = filter_extreme(LMAX, data, "max", elements=5)
+    #TRUE_MIN, TRUE_MAX = [], []
+    #TRUE_MIN, TRUE_MAX = ext_filter(LMIN, LMAX, data, elements=10)  #rmNegative=True
     TRUE_MIN.insert(0, (0, data[0]))    #add start of the chart
 
     print("POSITIONS:%s %s" % (zeroPoint,zeroPoint+TRUE_MAX[0][0]))
@@ -249,3 +233,4 @@ todo:
 -analyze all way from data in to "POSITIONS:" and remove useless junk
 -make it clear at least
 '''
+
