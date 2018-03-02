@@ -210,8 +210,6 @@ def main(commands):
     LMIN, LMAX = find_extreme(data)
     TRUE_MIN = filter_extreme(LMIN, data, "min", elements=4)
     TRUE_MAX = filter_extreme(LMAX, data, "max", elements=5)
-    #TRUE_MIN, TRUE_MAX = [], []
-    #TRUE_MIN, TRUE_MAX = ext_filter(LMIN, LMAX, data, elements=10)  #rmNegative=True
     TRUE_MIN.insert(0, (0, data[0]))    #add start of the chart
 
     print("POSITIONS:%s %s" % (zeroPoint,zeroPoint+TRUE_MAX[0][0]))
