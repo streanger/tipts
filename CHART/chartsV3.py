@@ -58,7 +58,6 @@ def draw_chart(data1, data2, lines, markerMin = [], markerMax = []):
                      arrowprops=dict(facecolor='black', shrink=0.01, width=0.5, headwidth=8))
     for line in lines:
         plt.plot(line[0], line[1])
-    
     plt.show()
     #save image in some way
 
@@ -209,6 +208,7 @@ def main(commands):
         filename = ""
     if not filename:
         zeroPoint = 0
+        lines = []
         data = [round(5*(math.sin(math.pi*x/100)), 2)+6 for x in range(1000)]
     else:
         data = read_file(filename, rmnl=True)
@@ -220,7 +220,7 @@ def main(commands):
             print("non-file or empty one...")
             exit()
         originalData = data
-        data, zeroPoint, lines = remove_horizontal(data, diff=(0.5, 0.1), decPoint=4, extractData=False)  #responses for shrink data(chart)
+        data, zeroPoint, lines = remove_horizontal(data, diff=(0.5, 0.1), decPoint=4, extractData=True)  #responses for shrink data(chart)
     data1 = [key for key, value in enumerate(data)]
 
     LMIN, LMAX = find_extreme(data)
