@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import matplotlib.pyplot as plt
-import random
 import math
 import os
 import time
@@ -32,7 +31,7 @@ def read_file(fileName, rmnl=False):
         fileContent = []
     return fileContent
 
-def draw_chart(data1, data2, markerMin = [], markerMax = []):
+def draw_chart(data1, data2, lines, markerMin = [], markerMax = []):
     plt.plot(data1, data2)
     plt.ylabel("Force[N]")
     plt.xlabel("measure[n]")
@@ -57,6 +56,9 @@ def draw_chart(data1, data2, markerMin = [], markerMax = []):
                      xy=(stop, data2[stop]+0.1),
                      xytext=(stop-50, data2[stop]+1),
                      arrowprops=dict(facecolor='black', shrink=0.01, width=0.5, headwidth=8))
+    for line in lines:
+        plt.plot(line[0], line[1])
+    
     plt.show()
     #save image in some way
 
@@ -84,7 +86,7 @@ def verify_ext(EXT_LIST, data, LOOK_FOR = "MIN"):
     for item in EXT_LIST:
         duplicates += find_duplicate(item, data)
     for key, value in duplicates:
-        for x in range(-10, 11):    #parameter
+        for x in range(-55, 56):    #parameter
             try:
                 SIDES.append(data[key+x])
             except:
@@ -120,15 +122,24 @@ def verify_ext(EXT_LIST, data, LOOK_FOR = "MIN"):
 def average(data):
     return (sum(data) / float(len(data)))
 
-def remove_horizontal(data, diff = 0.1, decPoint=3):
+def remove_horizontal(data, diff = 0.1, decPoint=3, extractData=False):
     #shrink chart from both sides
     #rebuild this function; its quite important
     LOCAL = []
+    lines, line1, line2 = [], [], []
+    INTERVAL = 25
     for key, item in enumerate(data):
         LOCAL.append(item)
-        if key%50 == 0:    #parameter
+        if key%INTERVAL == 0:    #parameter
             if abs(float(item) - average(LOCAL)) > diff[0]:
-                startKey = key
+                C = average(data[:key-INTERVAL])    #constant value - horizontal line
+                hillX = data[key:key+400]
+                hillY = [y for y in range(key, key+400)]
+                a, b = linreg(hillY, hillX)     #a,b factories on linear function
+                line1 = ([0, key],[C, C])
+                line2 = ([key-100, key + 300], [(key-100)*a+b, (key+300)*a+b])
+                startKey = round((C-b)/a) #(C-b)/a
+                #startKey = key     #previous values
                 break
     LOCAL = []
     for key, item in enumerate(data[::-1]):
@@ -139,7 +150,10 @@ def remove_horizontal(data, diff = 0.1, decPoint=3):
                 break
     OFFSET = -float(data[startKey])
     dataCut = [round(float(x) + OFFSET, decPoint) for x in data[startKey:stopKey]]  #data with offset
-    return dataCut, startKey
+    if not extractData:
+        lines = (line1, line2)
+        dataCut = data
+    return dataCut, startKey, lines
     #fix this -> find two linear functions and calc cross index
 
 def filter_extreme(LOCAL, data, minmax="", elements=3):
@@ -169,6 +183,8 @@ def simple_chart(data = []):
 
 def linreg(X, Y):
     #calculate trend line -> 'a' & 'b' factories;  not mine
+    if not X:
+        X = [x for x in range(len(Y))]
     N = len(X)
     Sx = Sy = Sxx = Syy = Sxy = 0.0
     for x, y in zip(X, Y):
@@ -204,7 +220,7 @@ def main(commands):
             print("non-file or empty one...")
             exit()
         originalData = data
-        data, zeroPoint= remove_horizontal(data, diff=(0.08, 0.1), decPoint=4)  #responses for shrink data(chart)
+        data, zeroPoint, lines = remove_horizontal(data, diff=(0.5, 0.1), decPoint=4, extractData=False)  #responses for shrink data(chart)
     data1 = [key for key, value in enumerate(data)]
 
     LMIN, LMAX = find_extreme(data)
@@ -214,7 +230,7 @@ def main(commands):
 
     print("POSITIONS:%s %s" % (zeroPoint,zeroPoint+TRUE_MAX[0][0]))
     #print("Execution time: %s [s]" % (time.time() - startUnix))
-    draw_chart(data1, data, TRUE_MIN, TRUE_MAX)
+    draw_chart(data1, data, lines, TRUE_MIN, TRUE_MAX)
 
 
 if __name__ == "__main__":
@@ -225,7 +241,7 @@ if __name__ == "__main__":
 '''
 todo:
 -int instead of floats
--shrink data both sides in smart way
+-shrink data both sides in smart way    ++
 -change parameters vs script execution time
 -make getopt
 -analyze all way from data in to "POSITIONS:" and remove useless junk
