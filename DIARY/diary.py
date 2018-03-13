@@ -44,7 +44,7 @@ class Application(tk.Frame):
             return False
         #now = colored(full_date(), "cyan")  #change color during seasons??
         now = full_date()   #think about: only time if multiple posts one day
-        write_file(self.name, "\n"+now, response=False)
+        write_file(self.name, now, response=False) #consider "\n"+now
         write_file(self.name, content, response=False)
         self.text.delete("1.0", tk.END) #clear all data in text box
         return True
