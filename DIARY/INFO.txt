@@ -1,0 +1,6 @@
+To compile app on linux use the following command:
+
+pyinstaller --onefile diary.py
+
+Wait few seconds and go to new created "dist" dir, where you can find "diary" executable.
+Copy it wherever you want and just run with double click.

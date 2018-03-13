@@ -1,4 +1,5 @@
 import os
+import sys
 
 def write_file(fileName, content, endline="\n", overWrite=False, response=True, rmSign=[]):
     if not content:
@@ -16,11 +17,13 @@ def write_file(fileName, content, endline="\n", overWrite=False, response=True, 
         mode="w"
     else:
         mode="a"
-    try:
-        os.chdir(os.path.dirname(__file__))
-    except:
-        os.path.dirname(os.path.abspath(__file__))
-    path = os.path.join(os.getcwd(), fileName)
+    #try:
+    #    os.chdir(os.path.dirname(__file__))
+    #except:
+    #    os.path.dirname(os.path.abspath(__file__))
+    path = os.path.realpath(os.path.dirname(sys.argv[0]))
+    path = os.path.join(path, fileName)
+    #path = os.path.join(os.getcwd(), fileName)
     with open(path, mode) as file:
         for item in content:
             if rmSign:
@@ -31,8 +34,4 @@ def write_file(fileName, content, endline="\n", overWrite=False, response=True, 
         if response:
             print("--< written to: {0} | contentType: {1}".format(fileName, contentType))
     return True
-#example
-#things = [["l01","l02"], ("tup01", "tup02"), 42, "monthy", {"a":42,"b":"spam"}]
-#for item in things:
-#    write_file(name="TEST.txt", content=item, endline="|<>|\n", overWrite=False, response=True, rmSign=["tup"])
 #write_file("TEST.txt", [1,2,3,4])  #simple usage
