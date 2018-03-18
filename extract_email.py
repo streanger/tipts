@@ -49,7 +49,7 @@ def main(argv):
         url = argv
     C = page_content(url)   #get full content
     if not C:
-        return None
+        return []
     rC = convert_page(C)    #convert to ascii and replace some stuff
     emails = find_emails(rC)    #extract emails
     return emails
