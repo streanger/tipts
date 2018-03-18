@@ -4,8 +4,6 @@ import requests
 from sys import argv
 
 def page_content(url=""):
-    if not url:
-        return ""
     try:
         return requests.get(url).text
     except:
@@ -14,7 +12,6 @@ def page_content(url=""):
 
 def find_emails(rC=[]):
     reForm = re.compile(r'[\w\.-]+@[\w\.-]+')
-    #rC = "test some@dot.email.com and this free@gmail.com like grres@zbz.com"
     try:
         emails = reForm.findall(rC)   #rC - replaced content
         return list(set(emails))
@@ -46,15 +43,18 @@ def convert_page(C=""):
 
 def main(argv):
     url = ""
-    if len(argv)>0:
+    if len(argv)>0 and type(argv) is list:
         url = argv[0]
+    elif type(argv) is str:
+        url = argv
     C = page_content(url)   #get full content
     if not C:
         return None
     rC = convert_page(C)    #convert to ascii and replace some stuff
     emails = find_emails(rC)    #extract emails
-    print(emails)
+    return emails
 
 
 if __name__ == "__main__":
-    main(argv[1:])
+    emails = main(argv[1:])
+    print(emails)
