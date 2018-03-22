@@ -78,6 +78,13 @@ def find_duplicate(value, data):
     duplicates = [item for item in enumerate(data) if item[1] == value]
     return duplicates
 
+def all_indexes(value, data):
+    try:
+        indexes = [key for key, item in enumerate(data) if item == value]
+    except:
+        indexes = [0]   #to not cause error while searching for start
+    return indexes
+
 def verify_ext(EXT_LIST, data, LOOK_FOR = "MIN"):
     TRUE_EXT = []
     SIDES = []
@@ -85,7 +92,8 @@ def verify_ext(EXT_LIST, data, LOOK_FOR = "MIN"):
     for item in EXT_LIST:
         duplicates += find_duplicate(item, data)
     for key, value in duplicates:
-        for x in range(-55, 56):    #parameter
+        for x in range(-45, 46):    #parameter
+        #for x in range(-5, 6):    #parameter
             try:
                 SIDES.append(data[key+x])
             except:
@@ -132,14 +140,18 @@ def remove_horizontal(data, diff = 0.1, decPoint=3, extractData=False):
         if key%INTERVAL == 0:    #parameter
             if abs(float(item) - average(LOCAL)) > diff[0]:
                 C = average(data[:key-INTERVAL])    #constant value - horizontal line
-                hillX = data[key:key+400]
-                hillY = [y for y in range(key, key+400)]
+                hillX = data[key:key+200]
+                hillY = [y for y in range(key, key+200)]
                 a, b = linreg(hillY, hillX)     #a,b factories on linear function
                 line1 = ([0, key],[C, C])
                 line2 = ([key-100, key + 300], [(key-100)*a+b, (key+300)*a+b])
                 startKey = round((C-b)/a) #(C-b)/a
                 #startKey = key     #previous values
                 break
+    #commenting this 2 lines doesnt cause any errors
+    startCorrect = [round(item, 3) for item in data[startKey:startKey+100]]
+    startKey += all_indexes(startCorrect[0], startCorrect)[-1] #the last element of indexes
+
     LOCAL = []
     for key, item in enumerate(data[::-1]):
         LOCAL.append(item)
@@ -152,6 +164,7 @@ def remove_horizontal(data, diff = 0.1, decPoint=3, extractData=False):
     if not extractData:
         lines = (line1, line2)
         dataCut = data
+        startKey = 0
     return dataCut, startKey, lines
     #fix this -> find two linear functions and calc cross index
 
@@ -209,23 +222,23 @@ def main(commands):
     if not filename:
         zeroPoint = 0
         lines = []
-        data = [round(5*(math.sin(math.pi*x/100)), 2)+6 for x in range(1000)]
+        data = [round(5*(math.sin(math.pi*x/100)), 2)+6 for x in range(1000)]   #example data
     else:
         data = read_file(filename, rmnl=True)
         if "TEST.txt" in filename:
-            data = [float(item[item.find("=")+2:]) for item in data[13:-1]] #consider cut value here
+            data = [round(float(item[item.find("=")+2:]),4) for item in data[13:-1]] #consider cut value here or round(xx, 4)
         else:
             data = [float(item) for item in data]
         if not data:
             print("non-file or empty one...")
             exit()
         originalData = data
-        data, zeroPoint, lines = remove_horizontal(data, diff=(0.5, 0.1), decPoint=4, extractData=True)  #responses for shrink data(chart)
+        data, zeroPoint, lines = remove_horizontal(data, diff=(0.2, 0.1), decPoint=4, extractData=True)  #responses for shrink data(chart)
     data1 = [key for key, value in enumerate(data)]
 
     LMIN, LMAX = find_extreme(data)
-    TRUE_MIN = filter_extreme(LMIN, data, "min", elements=4)
-    TRUE_MAX = filter_extreme(LMAX, data, "max", elements=5)
+    TRUE_MIN = filter_extreme(LMIN, data, "min", elements=9)
+    TRUE_MAX = filter_extreme(LMAX, data, "max", elements=10)
     TRUE_MIN.insert(0, (0, data[0]))    #add start of the chart
 
     print("POSITIONS:%s %s" % (zeroPoint,zeroPoint+TRUE_MAX[0][0]))
