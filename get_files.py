@@ -1,67 +1,69 @@
 import os
+import sys
 
 def get_files(rmScriptName=True):
-    try:
-	    os.chdir(os.path.dirname(__file__))
-    except:
-	    os.path.dirname(os.path.abspath(__file__))
-    pathAbs = os.getcwd()
+    pathAbs = script_path()
     files = os.listdir()
     if rmScriptName:
-        scriptName = os.path.basename(__file__)
+        scriptName = sys.argv[0]
         files.remove(scriptName)
     return files
 
-def get_dir(fileName=""):
-    #return our current path
-    #if fileName -> return full path
-    try:
-	    os.chdir(os.path.dirname(__file__))
-    except:
-	    os.path.dirname(os.path.abspath(__file__))
-    pathAbs = os.getcwd()
+def script_path(fileName=""):
+    pathOut = os.path.realpath(os.path.dirname(sys.argv[0]))
+    os.chdir(pathOut)
     if fileName:
-        fullPath = pathAbs + "\\" + fileName
-        return fullPath
-    #path = os.path.join(pathAbs, fileName)
-    return pathAbs     
-    
-def write_file(fileName, content, addNewline=True, overWrite=True, subPath="", response=True):
-    if overWrite:
-        #create new file each time
-        mode = "w"
-    else:
-        #append to the file
-        mode = "a"
-    #content should be a list
-    result = 0
-    #is it empty or not
-    if not content:
-        result = 1
-        return result
-    #will create subPath
-    newpath = os.path.join(get_dir(), subPath)
-    path = os.path.join(newpath, fileName)
-    #print("path:", path)
-    if not os.path.exists(newpath):
-        os.makedirs(newpath)
+        pathOut = os.path.join(pathOut, fileName)
+    return pathOut
 
+def write_file(fileName, content, endline="\n", overWrite=False, subPath="", response=True, rmSign=[]):
+    if not content:
+        return False
+    contentType = type(content)
+    if contentType in (list, tuple):
+        pass
+    elif contentType in (int, str):
+        content = [str(content)]
+    elif contentType is (dict):
+        content = list(content.items())
+    else:
+        return False
+    if overWrite:
+        mode="w"
+    else:
+        mode="a"
+    path = script_path()
+    if subPath:
+        path = os.path.join(path, subPath)
+        if not os.path.exists(path):
+                os.makedirs(path)
+    path = os.path.join(path, fileName)
     with open(path, mode) as file:
-        if addNewline:
-            for item in content:
-                #print("item:", item)
-                file.writelines(str(item)+"\n")
-        else:
-            for item in content:
-                file.writelines(str(item))
+        for item in content:
+            if rmSign:
+                for sign in rmSign:
+                    item = (str(item)).replace(sign, "")
+            file.writelines(str(item)+endline)
         file.close()
         if response:
-            print("--< written to: %s" % fileName)
-    return result
-    
-    
+            print("--< written to: {0} | contentType: {1}".format(fileName, contentType))
+    return True
+
 if __name__=="__main__":
+    args = sys.argv[1:]
     files = get_files()
-    print(files)
-    write_file("files_list.txt", files, subPath="listaLista")
-    input()
+    if "-h" in args:
+        print("Usage:")
+        print("-p print list of files in current dir")
+        print("-w write list of files to .txt in subdir")
+        print("-h print this usage info")
+    elif "-p" in args:
+        for item in files:
+            print(item)
+    elif "-w" in args:
+        write_file(fileName="files.txt",
+                   content=files,
+                   subPath="DIR_FILES",
+                   overWrite=True)
+    else:
+        print(files)
