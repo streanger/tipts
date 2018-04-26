@@ -1,7 +1,7 @@
 #!/usr/bin/python3
+#set point on line in terminal
 import sys
 from termcolor import colored
-#set point on line in terminal
 
 def all_indexes(value, data):
     try:
@@ -25,12 +25,13 @@ def set_point(point=128, lineRange=256):
     else:
         print("<wrong lineRange type, expected: %s>" % colored("int", "red"))
         return False
+
     size = lineRange//168 + 1
     lineSymbol = "~"
     if point >= lineRange:
         lineLen = lineRange
         if lineRange > 256: lineLen=256
-        LINE = "|" + lineSymbol*(1+lineLen//size) + "|" + str(round(100*(point/lineRange),2)) + "%"
+        LINE = "|" + lineSymbol*(-1+lineLen//size) + "|" + str(round(100*(point/lineRange),2)) + "%"
         if point == lineRange:
             print(colored(LINE, "cyan"))
         else:
@@ -41,33 +42,37 @@ def set_point(point=128, lineRange=256):
     elif point == 0:
         lineLen = lineRange
         if lineRange > 256: lineLen=256
-        LINE = "|" + lineSymbol*(1+lineLen//size) + "|" + str(round(100*(point/lineRange),2)) + "%"
+        LINE = "|" + lineSymbol*(-1+lineLen//size) + "|" + str(round(100*(point/lineRange),2)) + "%"
         print(LINE)
         return True
     else:
         LINE = ""
-    for x in range(lineRange):
+    for x in range(1, lineRange):
         if x == int(point):
             if x%size == 0:
-                LINE += ".|"
+                #we need to choose
+                #LINE += "|" #true position, false lenght of line
+                LINE += lineSymbol + "|"   #true lenght of line, false position; put symbol to left or right side
             else:
                 LINE += "|"
         else:
             if x%size == 0:
                 LINE += lineSymbol
-    LINE += "|" + str(round(100*(point/lineRange),2)) + "%"
-    pointIndex = LINE.index("|")
-    LINE = colored("|" + LINE[:pointIndex], "cyan") + LINE[pointIndex:]
-    print(LINE)
-
-
-    #keys = all_indexes("|", LINE)  #modify from here down
-    #print(keys)
-    #subLine = " "*len(LINE)
-    #subLine[keys[0]] == "|"
-    #subLine[keys[2]] == "|"
-    #print(subLine)
-    return True
+    LINE = "|" + LINE + "|" + str(round(100*(point/lineRange),2)) + "%"
+    keys = all_indexes("|", LINE)  #modify from here down
+    LINE = colored(LINE[:keys[1]], "cyan") + LINE[keys[1]:]
+    subLine = "|" + " "*(keys[2]-1) + "|"
+    SUBLINES = False
+    if not SUBLINES:
+        print(LINE)
+        return True
+    else:
+        print(subLine)
+        print(LINE)
+        print(subLine)
+        return True
+    #turn this function to return only line which is than modified
+    #or just clear expressions from the very top
 
 
 if __name__ == "__main__":
@@ -83,6 +88,3 @@ if __name__ == "__main__":
         #set_point(0x34, 256)
         for x in range(70, 80):
             set_point(x, 100)
-
-
-#think about retur LINE in each case and than modify it, change things etc
