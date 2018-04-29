@@ -1,8 +1,9 @@
-def rotate(sign, number, direction):
-    if direction:
+def rotate(sign, number):
+    if ord(sign) + number >= 0:
         return chr(ord(sign)+number)
     else:
-        return chr(ord(sign)-number)
+        return sign
 
-#print(rotate('a', 10, True))
+for x in range(-10,10):
+    print(x, rotate('l', x))
 
