@@ -4,6 +4,8 @@ import sys
 from termcolor import colored
 from time import sleep
 #from __future__ import print_function
+from threading import Thread
+import matplotlib.pyplot as plt
 
 def all_indexes(value, data):
     try:
@@ -35,13 +37,12 @@ def set_point(point=128, lineRange=256):
         lineLen = lineRange
         if lineRange > 256:
             lineLen=256
-        LINE = "|" + lineSymbol*(lineLen//size) + "|" + str(round(100*(point/lineRange),2)) + "%"
+        LINE = "|" + (lineSymbol*(lineLen//size)).replace("~~", "<>") + "|" + str(round(100*(point/lineRange),2)) + "%"
+        #LINE = LINE.replace("~~", "<>") + LINE[keys[1]:]
         if point == lineRange:
             return colored(LINE, "cyan")
         else:
             return colored(LINE, "cyan") + " <point out of range>"
-    elif point == lineRange:
-        LINE = lineSymbol
     elif point == 0:
         lineLen = lineRange
         if lineRange > 256:
@@ -69,18 +70,26 @@ def set_point(point=128, lineRange=256):
     #turn this function to return only line which is than modified
     #or just clear expressions from the very top
 
+def trace_point(lineRange=100, name="final countdown"):
+    print(name)
+    for x in range(lineRange+1):
+        LINE = set_point(x, lineRange)
+        print("{}".format(LINE), end='\r', flush=True)
+        sleep(0.05)
+    print()
+    return True
+
+def draw_chart():
+    data = [x**3 for x in range(1000)]
+    plt.plot(data)
+    plt.ylabel("y values[]")
+    plt.xlabel("x values[]")
+    plt.show()
+    return True
+
+
 if __name__ == "__main__":
-    args = sys.argv[1:]
-    if len(args) > 1:
-        point = int(args[0])
-        lineRange = int(args[1])
-        LINE = set_point(point, lineRange)
-        print(LINE)
-        sys.exit()
-    else:
-        print("final countdown:")
-        for x in range(0, 101):
-            LINE = set_point(x, 100)
-            print("{}".format(LINE), end='\r', flush=True)
-            sleep(0.10)
-        print()
+    t1 = Thread(target = trace_point, args=(100, ">>> final_countdown:"))
+    t2 = Thread(target = draw_chart, args=())
+    t1.start()
+    t2.start()
