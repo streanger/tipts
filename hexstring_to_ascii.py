@@ -37,7 +37,7 @@ if __name__ == "__main__":
         some = input("podaj hexstring:\n")
     else:
         some = input("podaj asciistring:\n")
-    while some[0] != "q":
+    while some != "":
         if hexToAscii:
             print(hex_ascii(some))
             some = input("podaj hexstring:\n")
