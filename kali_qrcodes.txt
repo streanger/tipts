@@ -10,3 +10,4 @@ $ zbarimg "image file name"
 $ zbarimg hello 
 QR-Code:Hello
 scanned 1 barcode symbols from 1 images in 0.05 seconds
+

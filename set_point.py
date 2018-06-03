@@ -2,6 +2,10 @@
 #set point on line in terminal
 import sys
 from termcolor import colored
+from time import sleep
+#from __future__ import print_function
+from threading import Thread
+import matplotlib.pyplot as plt
 
 def all_indexes(value, data):
     try:
@@ -11,6 +15,8 @@ def all_indexes(value, data):
     return indexes
 
 def set_point(point=128, lineRange=256):
+    lineSymbol = "~"
+    pointSymbol = "|" #"*" #"|"
     if type(point) is int:
         if point < 0:
             print("<point under zero value> %d/%d" % (point, lineRange))
@@ -26,25 +32,23 @@ def set_point(point=128, lineRange=256):
         print("<wrong lineRange type, expected: %s>" % colored("int", "red"))
         return False
 
-    size = lineRange//168 + 1
-    lineSymbol = "~"
+    size = lineRange//150 + 1
     if point >= lineRange:
         lineLen = lineRange
-        if lineRange > 256: lineLen=256
-        LINE = "|" + lineSymbol*(-1+lineLen//size) + "|" + str(round(100*(point/lineRange),2)) + "%"
+        if lineRange > 256:
+            lineLen=256
+        LINE = "|" + (lineSymbol*(lineLen//size)).replace("~~", "<>") + "|" + str(round(100*(point/lineRange),2)) + "%"
+        #LINE = LINE.replace("~~", "<>") + LINE[keys[1]:]
         if point == lineRange:
-            print(colored(LINE, "cyan"))
+            return colored(LINE, "cyan")
         else:
-            print(colored(LINE, "cyan") + " <point out of range>" )
-        return False
-    elif point == lineRange:
-        LINE = lineSymbol
+            return colored(LINE, "cyan") + " <point out of range>"
     elif point == 0:
         lineLen = lineRange
-        if lineRange > 256: lineLen=256
-        LINE = "|" + lineSymbol*(-1+lineLen//size) + "|" + str(round(100*(point/lineRange),2)) + "%"
-        print(LINE)
-        return True
+        if lineRange > 256:
+            lineLen=256
+        LINE = "|" + lineSymbol*(lineLen//size) + "|" + str(round(100*(point/lineRange),2)) + "%"
+        return LINE
     else:
         LINE = ""
     for x in range(1, lineRange):
@@ -52,39 +56,40 @@ def set_point(point=128, lineRange=256):
             if x%size == 0:
                 #we need to choose
                 #LINE += "|" #true position, false lenght of line
-                LINE += lineSymbol + "|"   #true lenght of line, false position; put symbol to left or right side
+                LINE += lineSymbol + pointSymbol   #true lenght of line, false position; put symbol to left or right side
             else:
-                LINE += "|"
+                LINE += pointSymbol
         else:
             if x%size == 0:
                 LINE += lineSymbol
     LINE = "|" + LINE + "|" + str(round(100*(point/lineRange),2)) + "%"
     keys = all_indexes("|", LINE)  #modify from here down
+    LINE = LINE[:keys[1]].replace("~~", "<>") + LINE[keys[1]:]
     LINE = colored(LINE[:keys[1]], "cyan") + LINE[keys[1]:]
-    subLine = "|" + " "*(keys[2]-1) + "|"
-    SUBLINES = False
-    if not SUBLINES:
-        print(LINE)
-        return True
-    else:
-        print(subLine)
-        print(LINE)
-        print(subLine)
-        return True
+    return LINE
     #turn this function to return only line which is than modified
     #or just clear expressions from the very top
 
+def trace_point(lineRange=100, name="final countdown"):
+    print(name)
+    for x in range(lineRange+1):
+        LINE = set_point(x, lineRange)
+        print("{}".format(LINE), end='\r', flush=True)
+        sleep(0.05)
+    print()
+    return True
+
+def draw_chart():
+    data = [x**3 for x in range(1000)]
+    plt.plot(data)
+    plt.ylabel("y values[]")
+    plt.xlabel("x values[]")
+    plt.show()
+    return True
+
 
 if __name__ == "__main__":
-    args = sys.argv[1:]
-    if len(args) > 1:
-        point = int(args[0])
-        lineRange = int(args[1])
-        set_point(point, lineRange)
-        sys.exit()
-    else:
-        #set_point(0xed, 256)
-        #set_point(0x73, 256)
-        #set_point(0x34, 256)
-        for x in range(70, 80):
-            set_point(x, 100)
+    t1 = Thread(target = trace_point, args=(100, ">>> final_countdown:"))
+    t2 = Thread(target = draw_chart, args=())
+    t1.start()
+    t2.start()
