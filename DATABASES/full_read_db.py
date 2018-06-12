@@ -20,7 +20,11 @@ def create_db(file):
 def read_db(file):
     conn = sqlite3.connect(file)
     c = conn.cursor()
-    c.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    try:
+        c.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    except sqlite3.DatabaseError as err:
+        print("file is not database...")
+        return False
     tables = c.fetchall()
     print("tables:", tables)
 
