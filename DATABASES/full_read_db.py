@@ -23,7 +23,7 @@ def read_db(file):
     try:
         c.execute("SELECT name FROM sqlite_master WHERE type='table';")
     except sqlite3.DatabaseError as err:
-        print("file is not database...")
+        print("file is not a database...")
         return False
     tables = c.fetchall()
     print("tables:", tables)
