@@ -1,7 +1,27 @@
 #!/usr/bin/python3
 import sqlite3
-import pandas as pd
-import sys, os
+import sys
+import os
+import csv
+
+
+def script_path():
+    path = os.path.realpath(os.path.dirname(sys.argv[0]))
+    os.chdir(path)  #it seems to be quite important
+    return path
+
+def csv_writer(fileOut, dataRows):
+    csvDir = "CSV_FILES"
+    if not os.path.exists(csvDir):
+        os.makedirs(csvDir)
+    path = os.path.join(PATH, csvDir)
+    path = os.path.join(path, fileOut)
+    with open(path, "w", newline='') as csv_file:
+        writer = csv.writer(csv_file, delimiter=",")
+        for row in dataRows:
+            writer.writerow(row)
+        print("--< data written to: {}".format(fileOut))
+    return True
 
 def create_db(file):
     #example db
@@ -26,14 +46,14 @@ def read_db(file):
         print("file is not a database...")
         return False
     tables = c.fetchall()
-    print("tables:", tables)
-
+    data = {}
     for table in tables:
         c.execute("SELECT * FROM %s" % table)
-        print(table, ":", c.fetchall())
-    return True
+        data[table[0]] = c.fetchall()      #store db data in dictio
+    return tables, data
 
 def main(args):
+    args = ["some.db", "-pt", "-s"]
     file = ""
     if args:
         file = args[0]
@@ -47,9 +67,22 @@ def main(args):
         print("usage:")
         print("     <script> <some.db>")
         print("     script will read entire db into terminal")
-        sys.exit()
-    #create_db(file)
-    read_db(file)
+        print("     -pt      print tables to console")
+        print("     -pd      print data to console")
+        print("     -s      save data in csv files")
+        return False
+
+    tables, data = read_db(file)
+    if "-pt" in args:
+        print(tables)
+    if "-pd" in args:
+        print(data)
+    if "-s" in args:
+        for key, row in data.items():
+            csv_writer(key + ".csv", row)
+    return True
+
 
 if __name__ == "__main__":
+    global PATH; PATH = script_path()
     main(sys.argv[1:])
