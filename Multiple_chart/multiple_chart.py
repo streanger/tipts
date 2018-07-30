@@ -24,6 +24,8 @@ def simple_write(file, strContent):
     return True
 
 def list_files(path, filter=''):
+    if not path:
+        path = '.'
     files = [item for item in os.listdir(path) if item.endswith(".csv")]
     if filter:
         files = [item for item in files if item.startswith(filter)]
@@ -50,17 +52,19 @@ def csv_writer(file, dataRows, csvDir="files"):
 def draw_plot(data, save):
     #useful site: https://www.python-course.eu/matplotlib_multiple_figures.php
     if not data:
-        print("empty data")
+        #print("--< no data to draw")
         return False
     #plt.plot(data, color="blue", marker='o', markersize='4', linewidth=1)
     #plt.plot(data, marker='o', markersize='4', linewidth=1)
     plt.figure(figsize=(19.2, 10.8))     #this is what i wanted :)
     plt.ylabel("Force[N]")
     plt.xlabel("measure[n]")
-    plt.suptitle('multiple chart')
+    plt.suptitle('Tensometer multiple chart. Filtered by: "{}"'.format(begin))
     plt.ylim((0,250))
     plt.grid()
-    for item in data:
+    print("--< trwa tworzenie wykresu. Proszę czekać...")
+    for key, item in enumerate(data):
+        #print("{}".format(key), end='\r', flush=True)
         plt.plot(item, linewidth=1)
     
     #plt.plot(data, linewidth=1)
@@ -92,7 +96,11 @@ def draw_plot(data, save):
     #manager = plt.get_current_fig_manager()
     #manager.resize(*manager.window.maxsize())
     if save:
-        pylab.savefig('multiple_chart.png', dpi=200)
+        if begin:
+            file = begin + "_tensometer_chart.png"
+        else:
+            file = "tensometer_chart.png"
+        pylab.savefig(file, dpi=200)
     return plt    
 
 def read_and_covert(file, subPath, rmnl=True):
@@ -149,7 +157,7 @@ def timer(func):
         before = time.time()
         val = func(*args, **kwargs)
         after = time.time()
-        print("elapsed time: {} [s]".format(round(after-before,4)))
+        print("--< elapsed time: {} [s]".format(round(after-before,4)))
         return val
     return f
 
@@ -192,17 +200,27 @@ def main(args):
     if args:
         print(args)
     global PATH; PATH = script_path()
-    global FILES_PATH; FILES_PATH = "files"
+    global FILES_PATH; FILES_PATH = ""     #FILES_PATH = "files"
     '''-------------setup and args-------------'''
     
-    filesNo = 10             #10000 -> 97s, 113s, 86s(fullData),
-    create_random_files(begin="180722_", subPath=FILES_PATH, n=filesNo)        #just to create random data
+    #filesNo = 10             #10000 -> 97s, 113s, 86s(fullData),
+    #create_random_files(begin="180722_", subPath=FILES_PATH, n=filesNo)        #just to create random data
     
-    files = list_files(FILES_PATH, filter="180722")
+    dirs = next(os.walk('.'))[1] + ['.']
+    FILES_PATH = input("--< wybierz folder z danymi: {}:\n".format(tuple(dirs)))
+    if not FILES_PATH in dirs:
+        if not FILES_PATH:
+            pass
+        else:
+            print("--< wrong subdir specified")
+            return False
+    global begin
+    begin = input("--< aby filtrować dane wprowadź datę w formacie RRMMDD:\n")
+    
+    files = list_files(FILES_PATH, filter=begin)
     plot_charts(files, toShow=False)
-    print("files number: {}".format(filesNo))
+    print("--< files number: {}".format(len(files)))
 
-    
     
 if __name__ == "__main__":
     main(sys.argv[1:])
