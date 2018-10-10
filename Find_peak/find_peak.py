@@ -2,13 +2,13 @@
 import math
 import os
 import sys
-import time
 
-from sys import argv, exit
-import matplotlib.pyplot as plt
-from pylab import savefig
+import time
+# import matplotlib.pyplot as plt
+# from pylab import savefig
 
 def script_path():
+    '''set current path to script path, and return it as string'''
     path = os.path.realpath(os.path.dirname(sys.argv[0]))
     os.chdir(path)
     return path
@@ -19,7 +19,8 @@ def is_float(value):
         return True
     except:
         return False
-
+        
+'''
 def timer(func):
     def f(*args, **kwargs):
         before = time.time()
@@ -28,17 +29,18 @@ def timer(func):
         print("elapsed time: {}s".format(after-before))
         return val
     return f
+'''
 
-def read_file(fileName, rmnl=False):
-    with open(fileName, "r") as file:
-        if rmnl:
+def read_file(fileName):
+    try:
+        with open(fileName, "r") as file:
             fileContent = file.read().splitlines()
-        else:
-            fileContent = file.readlines()
+    except:
+        fileContent = []
     return fileContent
-
+    
+'''
 def draw_chart(data, lines, markerMin = [], markerMax = [], subtitle="example name"):
-    # plt.plot(data1, data2)
     plt.plot(data)
     plt.ylabel("Force[N]")
     plt.xlabel("measure[n]")
@@ -72,6 +74,7 @@ def draw_chart(data, lines, markerMin = [], markerMax = [], subtitle="example na
     if 1:
         plt.show()
         plt.close()
+'''
 
 def all_indexes(value, data):
     try:
@@ -81,7 +84,7 @@ def all_indexes(value, data):
     return indexes
 
 def average(data):
-    return (sum(data) / float(len(data)))
+    return (sum(data) / (len(data)))
 
 def data_gen(data):
     for item in data:
@@ -154,7 +157,7 @@ def trend_data(data_x, data_y):
     return trendData
 
 def linreg(X, Y):
-    #calculate trend line -> 'a' & 'b' factories;  not mine
+    '''calculate trend line -> a & b factories;  not mine'''
     if not X:
         X = [x for x in range(len(Y))]
     N = len(X)
@@ -168,65 +171,69 @@ def linreg(X, Y):
     det = Sxx * N - Sx * Sx
     return (Sxy * N - Sy * Sx)/det, (Sxx * Sy - Sx * Sxy)/det
 
-def find_peak(data, UP):
+def find_peak(data, parameters, UP):
     '''ps'''
-    #ok -> rangeVal = 100, limit = 0.4
-    peaks = []
-    rangeVal = 125
+    rangeVal = parameters[0]
+    limit = parameters[1]
+    peaks = [] 
     for key, value in enumerate(data[rangeVal:-rangeVal]):
         SIDE = data[key:key+rangeVal*2]
         maxVal = max(SIDE)
         minVal = min(SIDE)
-        # diff = maxVal - minVal
         if UP:
             diff = value - minVal
         else:
             diff = maxVal - minVal
-        limit = 0.3
+        
         if UP:
-            # if diff > limit and value == maxVal and (not maxVal in (SIDE[0], SIDE[-1])):
             minIndex = SIDE.index(minVal)
             
             if minIndex > rangeVal:
-                localMax = max(SIDE[round(rangeVal*0.5):minIndex+1])     #decide which side
+                localMax = max(SIDE[round(rangeVal*0.5):minIndex+1])                        #decide which side
             else:
-                localMax = max(SIDE[minIndex:round(rangeVal*1.5)])     #decide which side
+                localMax = max(SIDE[minIndex:round(rangeVal*1.5)])                          #decide which side
             
-            # localMax = max(SIDE[:minIndex])     #decide which side
             if diff > limit and value == localMax and (not value in (SIDE[0], SIDE[-1])):
-                # print("key, value, diff:", key, value, diff)
-                peaks.append([key+rangeVal, value])
+                peaks.append((key+rangeVal, value))
         else:
             if diff > limit and value == minVal and (not minVal in (SIDE[0], SIDE[-1])):
-                # print("key, value, diff:", key, value, diff)
-                peaks.append([key+rangeVal, value])             
+                peaks.append((key+rangeVal, value))             
     return peaks
     
-@timer
+# @timer
 def main(commands):
     try:
         filename = commands[0]
     except:
         filename = ""
     if not filename:
-        zeroPoint = 0
-        lines = []
-        data = [round(5*(math.sin(math.pi*x/100)), 2)+6 for x in range(1000)]   #example data
+        out = "POSITIONS:{} {}\t>> file not specified or not found... <<".format(0, 0)
+        return out
     else:
-        data = read_file(filename, rmnl=True)
+        data = read_file(filename)
+        if not data:
+            out = "POSITIONS:{} {}\t>> no data or can't find... <<".format(0, 0)
+            return out
         if not is_float(data[0]):
-            data = [round(float(item[item.find("=")+2:]),4) for item in data[13:-1]] #consider cut value here
+            data = [round(float(item[item.find("=")+2:]),4) for item in data[13:-1]]                        #consider cut value here
         else:
             data = [float(item) for item in data]
         if not data:
-            print("non-file or empty one...")
-            out = "POSITIONS:0 0\tno data or can't find"
+            out = "POSITIONS:{} {}\t>> no data or can't find... <<".format(0, 0)
             return out
-        originalData = data
-        data, zeroPoint, lines = remove_horizontal(data, diff=(0.6, 0.2), decPoint=4, extractData=True)  #responses for shrink data(chart)
+        originalData = data.copy()
+        data, zeroPoint, lines = remove_horizontal(data, diff=(0.6, 0.2), decPoint=4, extractData=True)     #responses for shrink data(chart)
 
-    peaksUp = find_peak(data, True)
-    peaksDown = find_peak(data, False)
+    peaksUp = find_peak(data, (150, 0.2), True)
+    peaksUp.extend(find_peak(data, (50, 0.3), True))
+    peaksUp = list(set(peaksUp))                            #remove duplicates
+    peaksUp = sorted(peaksUp, key=lambda x: x[0])           #sort up for second element
+    
+    peaksDown = find_peak(data, (150, 0.2), False)
+    peaksDown.extend(find_peak(data, (50, 0.3), False))
+    peaksDown = list(set(peaksDown))                        #remove duplicates
+    peaksDown = sorted(peaksDown, key=lambda x: x[0])       #sort up for second element
+    
     
     TRUE_MIN = []
     TRUE_MAX = []
@@ -240,16 +247,16 @@ def main(commands):
     TRUE_MIN.extend(peaksDown)
     if not TRUE_MAX:
         TRUE_MAX.insert(0, (0, data[0]))
-        # TRUE_MAX.insert(0, (0, data[0]))
     switchPoint = TRUE_MAX[0][0]
     
-    '''
-    #remove peaks under 1.5N
-    if data[switchPoint] < 1.5:
-       TRUE_MAX = TRUE_MAX[1:]
-       switchPoint = TRUE_MAX[0][0]
-    '''
-       
+
+    # remove peaks under 1.5 [N]
+    for key, item in enumerate(TRUE_MAX):
+        if item[1] > 1.5:
+            TRUE_MAX = TRUE_MAX[key:]
+            switchPoint = TRUE_MAX[0][0]
+            break
+    
     out = ""
     if originalData[switchPoint] == max(data) or switchPoint > data.index(max(data)):
         #check if switch value means max value, and then return 0,0
@@ -257,12 +264,12 @@ def main(commands):
     else:
         out = "POSITIONS:{} {}".format(zeroPoint, zeroPoint+switchPoint)
     
-    if "-p" in commands:
-        draw_chart(data, lines, TRUE_MIN, TRUE_MAX, filename)
+    # if "-p" in commands:
+        # draw_chart(data, lines, TRUE_MIN, TRUE_MAX, filename)
     if "-f" in commands:
         force = data[switchPoint]
         if (float(force) < 3.2) or (float(force) > 4.8):
-            draw_chart(data, lines, TRUE_MIN, TRUE_MAX, filename)
+            # draw_chart(data, lines, TRUE_MIN, TRUE_MAX, filename)
             return out + " force: {}[N] <><> value over limits".format(force)
         else:
             return out + " force: {}[N]".format(force)
@@ -271,25 +278,31 @@ def main(commands):
 
 
 if __name__ == "__main__":
-    # commands = argv[1:]
-    # out = main(commands)
-    # print(out)
+    commands = sys.argv[1:]
+    out = main(commands)
+    print(out)
 
+    '''
+    #uncomment this one, to iter all files in current dir
     startTime = time.time()
-    #uncomment this one, to iter all files in current dir-
     path = script_path()
-    files = [item for item in os.listdir(path) if item.endswith(".txt")]
+    files = [item for item in os.listdir(path) if item.endswith(".txt")]      
     for key, file in enumerate(files):
         # out = main([file, "-f", "-p"])
-        # out = main([file, "-f"])
-        out = main([file])
+        # out = main([file, "-p"])
+        out = main([file, "-f"])
+        # out = main([file])
         print(key, file, out)
 
     endTime = time.time()
     print("total time:", endTime - startTime)
+    '''
     
     
 '''
 04.10.18
 -new idea
+
+10.10.18
+-data about peaks in tuples, not in list
 '''
