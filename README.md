@@ -1,10 +1,11 @@
 # tipts
 Scripts, tips and any other stuff which can be useful in my programming path.
+
 It contains:
 
   - plotting charts
   
-  - read & writing and modifying files
+  - reading & writing and modifying files
   
   - example of decorator, TK_GUI, smtp
   
