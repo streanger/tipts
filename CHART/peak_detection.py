@@ -20,7 +20,7 @@ def read_file(fileName, rmnl=False):
     except:
         fileContent = []
     return fileContent
-
+# '''
 def draw_chart(data1, data2, markerMin = [], markerMax = []):
     plt.plot(data1, data2)
     plt.ylabel("Force[N]")
@@ -36,7 +36,7 @@ def draw_chart(data1, data2, markerMin = [], markerMax = []):
             plt.plot(item, data2[item], 'go', markersize=8)
             plt.plot(item, data2[item], 'w+', markersize=6)
     plt.show()
-
+# '''
 def main(args):
     if "-p" in args:
         drawChart = True
