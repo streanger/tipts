@@ -22,7 +22,7 @@ def get_process_list():
     return processString
 
 @timer
-def call_tasklist():
+def call_tasklist(filter=""):
     '''return list of processes with using "tasklist" command'''
     tasks = subprocess.check_output(["tasklist"])
     tasks = tasks.decode("utf-8", "ignore")
@@ -32,6 +32,8 @@ def call_tasklist():
             if element.isdigit():
                 processes.append(["_".join(line.split()[:key]), line.split()[key]])     #when join use " " or "_"
                 break
+    if filter:
+        processes = [item for item in processes if item[0] == filter]
     processList = processes
     processDict = {item[0]:item[1] for item in processes}
     processString = "\n".join([" ".join(item) for item in processes])
