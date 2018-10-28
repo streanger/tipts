@@ -39,6 +39,10 @@ def get_users():
     #prepare data if needs
     return out
 
+def services():
+    winServices = psutil.win_service_iter()
+    return winServices
+
 def stuff():
     sinceBoot = last_boot()
     print("\n\t>> last boot was: {} [days] ago <<\n".format(sinceBoot))
