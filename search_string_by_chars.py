@@ -21,6 +21,7 @@ def check_with_regex(data, chars):
     else:
         return False
     
+    
 @timer
 def check_with_replace(data, chars):
     for c in chars:
