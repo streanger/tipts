@@ -51,14 +51,19 @@ def draw_hist(many_data, title):
     bins = np.linspace(0, 1000, 200)        # last parameter is width of columns
     colors = []
     hist_number = len(many_data)
+    probability = False
     for key, (file, data) in enumerate(many_data):
         cmap = plt.get_cmap('jet')
         current_color = cmap(key/hist_number)
         colors.append(current_color)
-        plt.hist(data, bins, alpha=0.5, histtype='bar', ec='black', density=True, label='this', color=current_color)
+        plt.hist(data, bins, alpha=0.5, histtype='bar', ec='black', density=probability, label='this', color=current_color)
 
     cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
-    plt.ylabel('Probability')
+    if probability:
+        plt.ylabel('Probability')
+    else:
+        plt.ylabel('Elements')
+    plt.xlabel('Score')
     
     #create legend
     handles = [Rectangle((0,0),1,1,alpha=0.5,color=c,ec="k") for c in colors]
