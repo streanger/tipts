@@ -4,7 +4,8 @@
 -use functions instead of copying the same part of codes
 -use arguments in to make your scripts flexible
 -remember about PEP8 and zen_of_python
--
+-speed -> numpy arrays vs lists vs tuples:
+    http://zwmiller.com/blogs/python_data_structure_speed.html
 
 
 pdf stores:
