@@ -1,0 +1,35 @@
+https://dzone.com/articles/executable-package-pip-install
+
+
+
+
+-line -> scripts=["justi"],	in setup.py caused Permission denied Errno 13
+				remove this line
+
+
+
+to build package localy:
+	-> python setup.py bdist_wheel
+
+
+to upload package to pypi:
+	-> python -m twine upload dist/*
+
+
+
+to install localy:
+	-> python setup.py install
+
+
+to install with pip:
+	-> pip install package_name
+
+
+to update dist:
+	-> python setup.py sdist
+
+
+
+.rst file editor:
+
+http://rst.ninjs.org/#SnVzdGVyCj09PT09PT09PT09
