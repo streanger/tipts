@@ -1,6 +1,7 @@
 ''' script for get files from 'https://doc.lagout.org' '''
 import sys
 import os
+import time
 
 import urllib.request
 import urllib.parse
@@ -28,6 +29,15 @@ def simple_read(file):
     return content
     
     
+def mechanic_write(str_content, type_time):
+    ''' typing sign by sign, with time sleep between; everything you put as var 'str_content' is converted to string '''
+    for item in str(str_content):
+        print("{}".format(item), end="", flush=True)
+        time.sleep(type_time)
+    print()
+    return True
+    
+    
 def get_full_list(file):
     data = []
     with open(file, "r", encoding="utf-8", errors='ignore') as f:
@@ -48,7 +58,9 @@ def get_file_from_url(data, dir):
     for (url, file) in data:
         local = os.path.join(new_dir, file)
         full_url = urllib.parse.urljoin('https://doc.lagout.org', url)
-        print(full_url)
+        # print(full_url)
+        print(file)
+        # mechanic_write(file, 0.025)       # just for style
         full_url = full_url.replace(' ', '%20')
         urllib.request.urlretrieve(full_url, local)
     return True
@@ -61,8 +73,8 @@ if __name__ == "__main__":
     keywords = ['python', 'network', 'arduino']
     for key in keywords:
         filtered = filter_data(data, key)
-        header = '\n' + '\n'.join(['-----' * 10, key.upper().center(len('-----' * 10)), '-----' * 10]) + '\n'
-        files = header + '\n'.join([file for url, file in filtered])
-        print(files)
-        filtered = filtered[:3]
-        status = get_file_from_url(filtered, key)
+        header = '\n' + '\n'.join(['-----' * 10, '|' + key.upper().center(len('-----' * 10), ' ')[1:-1] + '|', '-----' * 10])
+        # print(header + '\n' + '\n'.join([file for url, file in filtered]))
+        print(header)
+        # mechanic_write(header, 0.0025)
+        get_file_from_url(filtered, key)
