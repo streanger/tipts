@@ -16,7 +16,11 @@ git merge:
 
 git rejected error:
     git push -f origin master
-    
+
+
+Windows shortcuts:
+    -rename file --> "F2"
+
 
 pdf stores:
 https://www.pdfdrive.com
