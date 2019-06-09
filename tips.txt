@@ -14,6 +14,10 @@ git merge:
     The target of this integration (i.e. the branch that receives changes) is always the currently checked out HEAD branch.
 
 
+git rejected error:
+    git push -f origin master
+    
+
 pdf stores:
 https://www.pdfdrive.com
 http://gen.lib.rus.ec
