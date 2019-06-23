@@ -22,6 +22,13 @@ Windows shortcuts:
     -rename file --> "F2"
 
 
+Arduino tips:
+    1)
+        Topic:
+            "xxxxxx does not name a type" error message
+        solution:
+            The library has a nonstandard (for 1.0.3) directory structure: you should move the .cpp and .h files in ...\Arduino\libraries\ArduinoByteBuffer.
+
 pdf stores:
 https://www.pdfdrive.com
 http://gen.lib.rus.ec
