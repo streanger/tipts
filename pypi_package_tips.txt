@@ -29,6 +29,9 @@ to update dist:
 	-> python setup.py sdist
 
 
+to create dist in specified format:
+	-> python setup.py sdist --formats=gztar,zip
+
 
 .rst file editor:
 
