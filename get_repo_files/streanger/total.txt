@@ -1,0 +1,5 @@
+username: streanger
+totalFiles: 266
+totalNumberOfLines: 24125
+filteredBy: ('.py',)
+withBlankLines: True

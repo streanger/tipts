@@ -2,14 +2,30 @@
     only files are listed
     no tree
 '''
+import sys
+import os
 import urllib.request
 import bs4 as bs
 import requests
 import urllib.parse
 # from urllib.parse import urlparse
-import sys
+import time
 
 
+def script_path():
+    currentPath = os.path.realpath(os.path.dirname(sys.argv[0]))
+    os.chdir(currentPath)
+    return currentPath
+    
+    
+def simple_write(file, data):
+    '''simple_write data to .txt file, with specified data'''
+    with open(file, "w") as f:
+        f.write(str(data))
+        f.close()
+    return True
+    
+    
 def get_content(url=''):
     res = requests.get(url)
     content = res.text
@@ -89,31 +105,117 @@ def list_recursive(repo, current, first):
         return all
         
         
-if __name__ == "__main__":
-    username = 'streanger'
-    repos = get_all_git_repos(username, True)
-    repos = [repos[4], repos[11], repos[18]]
-    
-    toFilter = ('.py', '.c', '.cpp' , '.txt')
-    toFilter = ()
+def repo_files(repos, toFilter):
+    base = 'https://github.com'
+    rawBase = 'https://raw.githubusercontent.com'
+    data = {}
+    strOut = ''
     for key, repo in enumerate(repos):
         # input('{:02d}. start with repo: {} '.format(key, repo))
-        print('{:02d}. {} '.format(key, repo))
+        # print('{:02d}. {} '.format(key, repo))
+        # data
         full = list_recursive(repo, repo, True)
         out = flatten(full)
+        out = list(set(out))       # remove dupli (for now dk why duplicates appears)
         if toFilter:
             out = [item for item in out if item.endswith(toFilter)]
-        strOut = '\n'.join(['\t' + item for item in out])
-        print(strOut)
-        print()
+            
+        # change to raw
+        out = [item.replace(base, rawBase).replace('/blob', '', 1) for item in out]
         
-        
+        data['{:02d}. {} '.format(key, repo)] = out     # store files from single repo under one key
+        strOut += '{:02d}. {} '.format(key, repo) + '\n'
+        strOut += '\n'.join(['\t' + item for item in out]) + '\n'*2
+        # print(strOut)
+        # print()
+    return data, strOut
+    
+    
+def count_lines(links, blank):
+    number = 0
+    linksNumber = len(links)
+    strOut = ''
+    for key, link in enumerate(links):
+        file = get_file_from_url(link)
+        if blank:
+            # cut every lines, even empty
+            lines = len(file.splitlines())
+            number += lines
+        else:
+            # count only lines with code
+            lines = len([item for item in file.splitlines() if item.strip()])
+            number += lines
+        strOut += '{:04d}/{:04d}. total_lines: {}, current_lines: {}, current_file: {}\n'.format(key, linksNumber, number, lines, link)
+    return number, strOut
+    
+    
+def main_with_write(username):
+    ''' think of create some dir as username, and put there .txt files '''
+    # username = 'streanger'
+    # files which are generated: repo_files.txt, links.txt, total.txt, total_log.txt
+    
+    print('script starts, please wait...')
+    begin = time.time()
+    repos = get_all_git_repos(username, True)
+    # repos = [repos[4], repos[11], repos[18]]
+    
+    # toFilter = ('.py', '.c', '.cpp' , '.txt')
+    toFilter = ('.py', )
+    data, strOut = repo_files(repos, toFilter)
+    simple_write('repo_files.txt', strOut)
+    
+    links = [x for y in list(data.values()) for x in y]
+    simple_write('links.txt', '\n'.join(links))
+    
+    blank = True
+    totalNumberOfLines, log = count_lines(links, blank)
+    out = 'username: {}\ntotalFiles: {}\ntotalNumberOfLines: {}\nfilteredBy: {}\nwithBlankLines: {}'.format(username,
+                                                                                                            len(links),
+                                                                                                            totalNumberOfLines,
+                                                                                                            toFilter,
+                                                                                                            blank)
+    simple_write('total.txt', out)
+    simple_write('total_log.txt', log)
+    finish = time.time()
+    print('script execution finished in: {}[s]\nYou can open newly created files'.format(round(finish - begin, 4)))
+    return True
+    
+    
+def main(username, toFilter, blank, timer=True):
+    if timer:
+        print('script starts, please wait...')
+        begin = time.time()
+    repos = get_all_git_repos(username, True)
+    data, strOut = repo_files(repos, toFilter)
+    links = [x for y in list(data.values()) for x in y]
+    totalNumberOfLines, log = count_lines(links, blank)
+    out = 'username: {}\ntotalFiles: {}\ntotalNumberOfLines: {}\nfilteredBy: {}\nwithBlankLines: {}'.format(username,
+                                                                                                            len(links),
+                                                                                                            totalNumberOfLines,
+                                                                                                            toFilter,
+                                                                                                            blank)
+    if timer:
+        finish = time.time()
+        print('script execution finished in: {}[s]\nYou can open newly created files'.format(round(finish - begin, 4)))
+    return out
+    
+    
+if __name__ == "__main__":
+    script_path()
+    username = 'streanger'
+    out = main(username, ('.py', ), False)
+    simple_write('{}_total.txt'.format(username), out)
+    print(out)
+    
+    
 '''
 info:
     -searching only for public repos
     -need to do it recursively
     -for now it list files
     -finally it need to count lines of (filtered) files
+    -think of add some timer
+    -make some module of that
     -
     
 '''
