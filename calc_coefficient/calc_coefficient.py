@@ -59,23 +59,36 @@ def calc_coefficient(first, second, min_val, max_val, level):
     for key, (title, data) in enumerate(manyData):
         # calc a_coeff
         # range should be the value between min_val and max_val
-        bestRanges = []
-        for element in data:
-            setData = list(set(data))
-            print(len(setData))
-            # for every element in list make range
-            # than check how many items are inside
-            # return the best value
-            itemsInside = len([item for item in data if (element <= item <= (max_val - min_val))])
-            bestRanges.append((element, itemsInside))
-            a_coeff = sorted(bestRanges, key=lambda x: x[1])[0][0]
-            
+        # steps = np.linspace(0.5, 2.0, 101)
+        steps = np.linspace(0.7, 1.5, 10)
+        allData = len(data)
+        for step in steps:
+            input(str(step) + ' press enter... ')
+            bestRanges = []
+            scaledData = step * data
+            setData = list(set(scaledData))
+            for element in setData:
+                # print(len(setData))
+                # for every element in list make range
+                # than check how many items are inside
+                # return the best value
+                itemsInside = len([item for item in scaledData if (element <= item <= element + (max_val - min_val))])
+                bestRanges.append((element, (itemsInside/allData)*100))
+                # print((itemsInside/allData)*100)
+            best = sorted(bestRanges, key=lambda x: x[1], reverse=True)[0][1]
+            # print(best)
+            if best > level:
+                print('for step: {}, and element: {}, best value is: {}'.format(step, element, best))
+                a_coeff = step
+                break
             
         # calc b_coeff
-        if False:
-            medianValue = median(data)
+        if True:
+            # here we need to use scaledData
+            # medianValue = median(data)
+            medianValue = median(scaledData)
             print('{}. medianValue: {}'.format(key, medianValue))
-            dictio[title] = {'b_coeff': (min_val + max_val)/2 - medianValue}
+            dictio[title] = {'a_coeff': a_coeff, 'b_coeff': (min_val + max_val)/2 - medianValue}
         
         
         
@@ -157,11 +170,11 @@ if __name__ == "__main__":
         # read random data
         file_01 = 'data_01.txt'
         file_02 = 'data_02.txt'
-        first = [float(item) for item in simple_read('data_01.txt')]
-        second = [float(item) for item in simple_read('data_02.txt')]
+        first = np.array([float(item) for item in simple_read('data_01.txt')])
+        second = np.array([float(item) for item in simple_read('data_02.txt')])
         
         many_data = [(file_01, first), (file_02, second)]
-        # draw_hist(many_data, 'title')
+        draw_hist(many_data, 'title')
         # show single hist
         
         # show double hist in one
@@ -172,6 +185,12 @@ if __name__ == "__main__":
         # do the job here
         dictio = calc_coefficient(('first', first), ('second', second), 3.2, 4.8, 80)
         print(dictio)
+        input('contiue with this stuff? ')
+        many_data = [(file_01, first * dictio['first']['a_coeff'] + dictio['first']['b_coeff']),
+                     (file_02, second * dictio['second']['a_coeff'] + dictio['second']['b_coeff'])]
+        # print(dictio)
+        draw_hist(many_data, 'title')
+        
         
 '''
 info:

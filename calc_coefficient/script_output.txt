@@ -1,0 +1,10 @@
+
+0.7 press enter...
+for step: 0.7, and element: 2.7137269930206087, best value is: 100.0
+0. medianValue: 2.523065730539029
+0.7 press enter...
+for step: 0.7, and element: 3.2612915008919057, best value is: 98.2
+1. medianValue: 2.992014327896551
+{'first': {'a_coeff': 0.7, 'b_coeff': 1.4769342694609708}, 'second': {'a_coeff': 0.7, 'b_coeff': 1.007985672103449}}
+contiue with this stuff?
+>>>
