@@ -1,5 +1,5 @@
-username: streanger
-totalFiles: 266
-totalNumberOfLines: 24125
-filteredBy: ('.py',)
-withBlankLines: True
+username...........: streanger
+totalFiles.........: 279
+totalNumberOfLines.: 25549
+filteredBy.........: ('.py',)
+countBlankLines....: True
