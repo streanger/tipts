@@ -1,0 +1,239 @@
+1 --> WHY_PYTHON:
+    NOTHING
+    
+    
+2 --> LOCAL_HOSTS:
+    NOTHING
+    
+    
+3 --> dns python:
+    pip install dnspython
+    import dns
+    import dns.resolver
+    some = dns.resolver.query('google.com', 'MX')   # 'A', 'TXT'...
+    for item in some:
+        print(item)
+        
+    
+    import dns.reversename
+    n = dns.reversename.from_address('127.0.0.1')
+    print(n)
+    out = dns.reversename.to_address(n)
+    print(out)
+    
+    
+4 --> SMTP:
+    NOTHING
+    
+    
+5 --> SCAPY(linux mostly):
+    NOTHING
+    
+    
+6 --> ARP-POISONING:
+    (GOOD-QUALITY-FROM-THAT)
+    arpspoof
+    iptables
+    arp
+    https://github.com/Adastra-thw/pyHacks/blob/master/MitmDnsSpoofingPoC.py
+    
+    
+7 --> HTTP:
+    import urllib
+    import httplib
+    import httplib2
+    
+    
+8 --> BEAUTIFUL_SOUP:
+    -web parsing
+    from bs4 import BeautifulSoup
+    
+    
+9 --> SCRAPY(web_crawling):
+    scrapy shell <url>
+    scrapy startproject <project_name>
+    
+    
+10 --> MECHANIZE:
+    import mechanize
+    br = mechanize.Browser()
+    WARNING:
+        -mechanize works only on python <= 2.7
+        -instead you can use the following:
+            https://stackoverflow.com/questions/31774756/installing-mechanize-for-python-3-4
+            RoboBrowser
+            MechanicalSoup
+            
+            
+11 --> WEB CRAWLING:
+    bs4
+    webspider
+    scrapy
+    
+    
+12 --> URLLIB3, REQUESTS:
+    import urllib3
+    pool = urllib3.PoolManager(10)
+    res = pool.request('GET', 'http://www.google.com')
+    res.status
+    res.headers
+    res.data
+    
+    --------------------------------------
+    requests.get(...)
+    requests.post(...)
+    
+    --------------------------------------
+    session = requests.Session()
+    r = session.get(<url>)
+    r.text
+    session.auth('user', 'pass')
+    session.headers.update({'Header1':'HVALUE1', 'Header2':'HVALUE2'})
+    res = session.get(<url>)
+    res.text
+    res.request.headers
+    
+    
+13 --> HTTP:
+    decoding base64
+    http digest
+    
+    
+14 --> NMAP:
+    # its just wrapper
+    pip install python-nmap
+    
+    # NMAP NEED TO BE INSTALLED!
+    # https://nmap.org/book/inst-windows.html
+    
+    import nmap
+    nm = nmap.PortScanner()
+    nm.scan('127.0.0.1', '22-80')
+    nm.all_hosts()
+    
+    
+15 --> SHODAN EXPLOITS:
+    https://exploits.shodan.io/welcome
+    # download python api to use it
+    
+    
+16 --> OAUTH:
+    https://pypi.org/project/oauthlib/
+    https://oauth.net/code/python/
+    
+    
+17 --> FUZZ_DB, PYWEBFUZZ:
+    NOTHING
+    
+    
+18 --> FTP:
+    import ftplib
+    
+    
+19 --> PEXPECT:
+    tool for automation tasks/command line applications in UNIX systems
+    
+    import pexpect
+    child = pexpect.spwan('some_tool')
+    
+    
+20 --> SSH with PARAMIKO:
+    NOTHING
+    
+    
+21 --> PLUMBUM:
+    Plumbum: shell combinators library
+    
+    from plumbum import local
+    ls = local["ls"]
+    ls
+    LocalCommand(<LocalPath /bin/ls>)
+    ls()
+    
+    
+22 --> PLUMBUM remote machines:
+    from plumbum import SshMachine
+    
+    
+23 --> TOR:
+    how the tutor, starts work with tor(on linux):
+        authbind --dep ./start-tor-browser &
+        
+    python shell commands:
+        from stem.control import Controller 
+        import getpass
+        
+        control = Controller.form_port(port = 9151)
+        passw = getpass.getpass('pass: ')
+        
+        controller.authenticate(passw)
+        
+        
+24 --> TOR descriptors:
+    NOTHING
+    
+    
+25 --> TOR STEM ATTACK:
+    NOTHING
+    
+    
+26 --> TWISTED:
+    Twisted is an event-driven networking engine written in Python
+    Supports multiple protocols: SSL, SSH, FTP, POP, IMAP, HTTP and others
+    100% pure python
+    
+    
+27 --> TWISTED continuation:
+    NOTHING
+    
+    
+28 --> PyDGB:
+    pydbg is an implementation of the Rust2018 builtin debugging macro dbg
+    https://pypi.org/project/pydbg/
+    
+    
+    pip install pydbg
+
+    from pydbg import dbg
+    a = 2
+    b = 3
+
+    dbg(a+b)
+
+    def square(x: int) -> int:
+        return x * x
+
+    dbg(square(a))
+    
+    
+29 --> IMMUNITY DEBUGGER:
+    https://www.immunityinc.com/products/debugger/
+    Description from web:
+        Immunity Debugger is a powerful new way to write exploits, analyze malware, and reverse engineer binary files. It builds on a solid user interface with function graphing, the industry's first heap analysis tool built specifically for heap creation, and a large and well supported Python API for easy extensibility.
+    Application need to be installed, to use it from python.
+    
+    
+30 --> IMMUNITY DEBUGGER - PyHooks:
+    NOTHING
+    
+    
+31 --> PE(Portable Executables) FILES, PYDASM:
+    low level disassembly
+    https://pypi.org/project/pefile/
+    from pefile import PE
+    pe = PE('path_to_file')
+    pe.DOS_HEADER
+    
+    
+32 --> FABRIC, SSH, BOTNET with FABRIC:
+    NOTHING
+    
+    
+33 --> HTTP against TOR, with using REQUESTS AND SOCKS:
+    import socks
+    import socket
+    import requests
+    
+    
+34 --> SNMP with PySNMP:
+    SNMP - simple network managment protocol
