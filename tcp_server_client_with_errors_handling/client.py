@@ -6,8 +6,9 @@ import socket
 
 
 if __name__ == "__main__":
-    target_host = 'localhost'
-    target_port = 9999
+    # target_host, target_port = '169.254.227.138', 23
+    target_host, target_port = 'localhost', 9999
+    
     while True:
         try:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -20,6 +21,11 @@ if __name__ == "__main__":
             msg = input("[o] Send message: ")
             if not msg.strip():
                 continue
+                
+            if msg in ('quit', 'close', 'exit', 'end', 'finish'):
+                print('closing connection')
+                client.close()
+                sys.exit()
                 
             try:
                 client.send(msg.encode('utf-8'))

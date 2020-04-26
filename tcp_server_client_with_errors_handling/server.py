@@ -6,10 +6,14 @@ import socket
 
 
 if __name__ == "__main__":
-    bind_ip = 'localhost'
-    bind_port = 9999
+    # bind_ip, bind_port = '169.254.227.138', 23
+    bind_ip, bind_port = 'localhost', 9999
+    
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind((bind_ip,bind_port))
+    try:
+        server.bind((bind_ip,bind_port))
+    except:
+        server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.listen(5)
     print('[*] Listen on: {}:{}'.format(bind_ip, bind_port))
     
