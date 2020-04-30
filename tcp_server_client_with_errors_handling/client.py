@@ -29,9 +29,21 @@ if __name__ == "__main__":
                 
             try:
                 client.send(msg.encode('utf-8'))
+                
             except ConnectionResetError:
                 print('[o] Connection broken. Retrying...')
                 break
                 
-            response = client.recv(4096).decode('utf-8')
-            print(response)
+            except ConnectionAbortedError:
+                print('[o] Connection broken. Retrying...')
+                break
+                
+            try:
+                response = client.recv(4096).decode('utf-8')
+                print(response)
+                
+            except ConnectionResetError:
+                print('[o] Connection reset error')
+                break
+                
+                

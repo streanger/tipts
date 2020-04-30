@@ -24,20 +24,29 @@ if __name__ == "__main__":
             
             while True:
                 try:
-                    data = conn.recv(16)
+                    data = conn.recv(4096)
+                    
                 except ConnectionResetError:
                     print('[*] Connection with client broken. Retrying...')
                     break
                     
                 if data:
-                    decoded = data.decode('utf-8')
+                    try:
+                        decoded = data.decode('utf-8')
+                        
+                    except UnicodeDecodeError as err:
+                        print('[*] Error catched: {}'.format(err))
+                        continue
+                        
                     print('[*] Received data from client: {}'.format(decoded))
                     try:
                         conn.sendall('[*] < Server response >'.encode('utf-8'))
+                        
                     except ConnectionResetError:
                         print('[*] Connection broken, by remote host. Retrying...')
                         break
                 else:
+                    print('no data')
                     break
         finally:
             conn.close()
