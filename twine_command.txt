@@ -1,0 +1,7 @@
+
+to upload on pypi test:
+    py -3.7 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+to upload on pypi:
+    py -3.7 -m twine upload dist/*
+    
