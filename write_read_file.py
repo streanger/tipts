@@ -27,26 +27,10 @@ def write_file(file, data):
     return True
     
     
-def remove_whitespaces(content):
-    lines = content.splitlines()
-    converted_lines = []
-    for line in lines:
-        if not line.strip():
-            line = line.strip()
-        line = line.rstrip()
-        converted_lines.append(line)
-    out = '\n'.join(converted_lines)
-    return out
-    
-    
 if __name__ == "__main__":
     script_path()
-    file = 'tkinter_fonts_viewer.py'
-    over_write = True
+    file = 'file.txt'
+    write_file(file, 'test\ntest')
     content = read_file(file)
-    converted = remove_whitespaces(content)
-    out = '_out.'.join(file.split('.'))
-    if over_write:
-        out = file
-    write_file(out, converted)
+    print(content)
     
