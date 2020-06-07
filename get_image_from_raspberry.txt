@@ -1,0 +1,17 @@
+
+1) capture image, to file, and copy it
+    -login to raspberry over ssh
+    -capture image:
+        raspistill -o /home/pi/image.jpg <add some parameters>
+    -copy image, to local directory:
+        pscp -pw password pi@123.456.789.123:/home/pi/image.jpg /local/directory/image.jpg
+    -read image, for further analyze
+    
+    
+2) get image over tcp
+    -run server on raspberry, which let us, to capture data
+    -send command over tcp, with setup for camera
+    -send command over tcp, to get image directly from server (image is captured and send to client)
+    
+-for both method, we need at first find raspberry ip address
+
