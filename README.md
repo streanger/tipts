@@ -14,3 +14,7 @@ It contains:
   - working with pdf example
   
   - and many others
+
+## screen from console histogram, my early application
+
+![image](HIST/example01.png)
