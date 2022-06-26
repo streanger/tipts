@@ -7,10 +7,12 @@ https://dzone.com/articles/executable-package-pip-install
 				remove this line
 
 
-
 to build package localy:
 	-> python setup.py bdist_wheel
 
+
+to check dist before upload:
+	-> python -m twine check dist/*
 
 to upload package to pypi:
 	-> python -m twine upload dist/*
