@@ -3,8 +3,12 @@ https://dzone.com/articles/executable-package-pip-install
 -line -> scripts=["justi"],	in setup.py caused Permission denied Errno 13
 				remove this line
 
+install dependencies:
+	pip install twine
+	pip install wheel
+	
 to build package localy:
-	-> python setup.py bdist
+	-> python setup.py bdist_wheel
 
 to check dist before upload:
 	-> python -m twine check dist/*
