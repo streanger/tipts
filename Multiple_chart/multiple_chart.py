@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from matplotlib import get_backend
 import pylab
 
+import pandas as pd
+
 def script_path(fileName=''):
     path = os.path.realpath(os.path.dirname(sys.argv[0]))
     os.chdir(path)  #it seems to be quite important
@@ -23,12 +25,15 @@ def simple_write(file, strContent):
         f.close()
     return True
 
-def list_files(path, filter=''):
+def list_files(path, fullpath=True, filter=''):
     if not path:
         path = '.'
     files = [item for item in os.listdir(path) if item.endswith(".csv")]
     if filter:
         files = [item for item in files if item.startswith(filter)]
+    if fullpath:
+        subpath = os.path.join(PATH, path)
+        files = [os.path.join(subpath, file) for file in files]      
     return files
 
 def csv_reader(file):
@@ -195,16 +200,19 @@ def plot_charts(files, toShow):
     '''
     
     return True
+
+def with_pandas(df):
+    return True
     
 def main(args):
     if args:
         print(args)
     global PATH; PATH = script_path()
-    global FILES_PATH; FILES_PATH = ""     #FILES_PATH = "files"
+    global FILES_PATH; FILES_PATH = "files"     #FILES_PATH = "files"
     '''-------------setup and args-------------'''
     
-    #filesNo = 10             #10000 -> 97s, 113s, 86s(fullData),
-    #create_random_files(begin="180722_", subPath=FILES_PATH, n=filesNo)        #just to create random data
+    filesNo = 100             #10000 -> 97s, 113s, 86s(fullData),
+    create_random_files(begin="180722_", subPath=FILES_PATH, n=filesNo)        #just to create random data
     
     dirs = next(os.walk('.'))[1] + ['.']
     FILES_PATH = input("--< wybierz folder z danymi: {}:\n".format(tuple(dirs)))
@@ -217,9 +225,16 @@ def main(args):
     global begin
     begin = input("--< aby filtrować dane wprowadź datę w formacie RRMMDD:\n")
     
-    files = list_files(FILES_PATH, filter=begin)
-    plot_charts(files, toShow=False)
-    print("--< files number: {}".format(len(files)))
+    files = list_files(FILES_PATH, fullpath=True, filter=begin)
+    print(files)
+    df = pd.concat([pd.read_csv(f, encoding="ISO-8859-1") for f in files], ignore_index=True)
+    print(df)
+    
+    if True:
+        status = with_pandas(df)
+    else:
+        plot_charts(files, toShow=False)
+        print("--< files number: {}".format(len(files)))
 
     
 if __name__ == "__main__":
@@ -231,4 +246,7 @@ if __name__ == "__main__":
 date style:
 180722_124357.csv
 
+
+20.08 - todo:
+-script with using pandas
 '''
