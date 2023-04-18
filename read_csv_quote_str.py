@@ -4,7 +4,7 @@ import csv
 
 line = '"this" "is very" "something csv" "values"'
 lines = [line]
-reader = csv.reader(lines, delimiter=' ', quotechar='"')
+reader = csv.reader(lines, delimiter=' ', doublequote='"')
 parsed_lines = [line for line in reader]
 for parsed in parsed_lines:
     print(parsed)
