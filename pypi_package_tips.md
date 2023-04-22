@@ -4,6 +4,7 @@
 - install dependencies: `pip install twine wheel`
 - to build package localy: `python setup.py bdist_wheel`
 - to check dist before upload: `python -m twine check dist/*`
+- to upload package to test pypi: `python -m twine upload --repository testpypi dist/*`
 - to upload package to pypi: `python -m twine upload dist/*`
 - to install localy: `python setup.py install`
 - to install with pip: `pip install package_name`
