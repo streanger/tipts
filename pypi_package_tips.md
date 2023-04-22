@@ -23,7 +23,5 @@ recursive-include happy_couple/sounds *
 'happy_couple': ['sounds/smb_jump.wav', 'lines_only/small_head.png'],	# for single file
 'happy_couple': images + sounds,					# for predefined list of files
 ```
-
-- .rst file editor: http://rst.ninjs.org/#SnVzdGVyCj09PT09PT09PT09
 - https://dzone.com/articles/executable-package-pip-install
 - line -> scripts=["justi"],	in setup.py caused Permission denied Errno 13; remove this line
