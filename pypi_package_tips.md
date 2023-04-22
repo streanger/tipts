@@ -18,7 +18,7 @@
 recursive-include happy_couple/lines_only *
 recursive-include happy_couple/sounds *
 ```
-- if you want to add non-python file to site-packages directory in your python python, specify it in setup.py. Example below:
+- if you want to add non-python file to site-packages directory in your python, specify it in setup.py. Example below:
 ```
 'happy_couple': ['sounds/smb_jump.wav', 'lines_only/small_head.png'],	# for single file
 'happy_couple': images + sounds,					# for predefined list of files
