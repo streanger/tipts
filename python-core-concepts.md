@@ -35,3 +35,13 @@ relations between dunder (double underscore) methods and top level syntax:
 *Modules are imported only once, everything else is overthinking. Don't use singletons and try not to use globals.*
 
 [Creating a singleton in Python](https://stackoverflow.com/a/6760726)
+
+
+---
+*When I first came from Java to Python I hated this. It scared me to death.*
+
+*Today it might just be the one thing I love most about Python.*
+
+*Remember, encapsulation is not even weakly related to "security", or keeping the kids off the lawn. It is just another pattern that should be used to make a code base easier to understand.*
+
+[Why are Python's 'private' methods not actually private?](https://stackoverflow.com/a/1949874)
