@@ -1,11 +1,8 @@
-
 *there typically tends to be in Python, some correspondence between some top level syntax or function and some underscore method that implements that syntax or function*
 
 ~James Powell
 
 [James Powell: So you want to be a Python expert? | PyData Seattle 2017](https://youtu.be/cKPlPJyQrt4?t=2124)
-
----
 
 **Example to show the above concept**
 
@@ -31,3 +28,10 @@ relations between dunder (double underscore) methods and top level syntax:
 - `__equal__` -> `some == other`
 - `__getitem__` -> `some[4]`, `list(some)`
 - `...`
+
+
+---
+
+*Modules are imported only once, everything else is overthinking. Don't use singletons and try not to use globals.*
+
+[Creating a singleton in Python](https://stackoverflow.com/a/6760726)
