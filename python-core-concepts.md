@@ -14,11 +14,14 @@ class Some:
     def __init__(self):
         self.items = [1,2,3,4]
         
+    def __call__(self):
+        print('hello there')
+        
     def __equal__(self, other):
         return self.items == other.items
         
     def __getitem__(self, index):
-        return self.now[index]
+        return self.items[index]
         
 some = Some()
 ```
