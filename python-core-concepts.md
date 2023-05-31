@@ -32,16 +32,41 @@ relations between dunder (double underscore) methods and top level syntax:
 
 ---
 
-*Modules are imported only once, everything else is overthinking. Don't use singletons and try not to use globals.*
-
 [Creating a singleton in Python](https://stackoverflow.com/a/6760726)
 
+*Modules are imported only once, everything else is overthinking. Don't use singletons and try not to use globals.*
 
 ---
+
+[Why are Python's 'private' methods not actually private?](https://stackoverflow.com/a/1949874)
+
 *When I first came from Java to Python I hated this. It scared me to death.*
 
 *Today it might just be the one thing I love most about Python.*
 
 *Remember, encapsulation is not even weakly related to "security", or keeping the kids off the lawn. It is just another pattern that should be used to make a code base easier to understand.*
 
-[Why are Python's 'private' methods not actually private?](https://stackoverflow.com/a/1949874)
+---
+
+[What's the pythonic way to use getters and setters?](https://stackoverflow.com/a/36943813)
+
+*The "Pythonic" way is not to use "getters" and "setters", but to use plain attributes(...)*
+
+*If later, you want to modify the setting and getting, you can do so without having to alter user code, by using the property decorator*
+
+---
+
+[Why is __init__() always called after __new__()?](https://stackoverflow.com/a/674369)
+
+
+*Use `__new__` when you need to control the creation of a new instance.*
+
+*Use `__init__` when you need to control initialization of a new instance.*
+
+*`__new__` is the first step of instance creation. It's called first, and is responsible for returning a new instance of your class.*
+
+*In contrast, `__init__` doesn't return anything; it's only responsible for initializing the instance after it's been created.*
+
+*In general, you shouldn't need to override `__new__` unless you're subclassing an immutable type like str, int, unicode or tuple.*
+
+~From April 2008 post: [When to use __new__ vs. __init__?](http://mail.python.org/pipermail/tutor/2008-April/061426.html) on mail.python.org.
