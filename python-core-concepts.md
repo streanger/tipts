@@ -70,3 +70,9 @@ relations between dunder (double underscore) methods and top level syntax:
 *In general, you shouldn't need to override `__new__` unless you're subclassing an immutable type like str, int, unicode or tuple.*
 
 ~From April 2008 post: [When to use __new__ vs. __init__?](http://mail.python.org/pipermail/tutor/2008-April/061426.html) on mail.python.org.
+
+---
+
+[Al Sweigart: The Amazing Mutable, Immutable Tuple](https://www.youtube.com/watch?v=argy7dRB_LI)
+
+*Everyone knows Python tuples are immutable, but an immutable tuple that contains mutable objects is itself mutable. Or is it?*
