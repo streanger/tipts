@@ -8,6 +8,7 @@ It contains:
   - terminal histogram
   - working with pdf files
   - benchmarks
+  - [python-core-concepts](python-core-concepts.md)
   - tips for deployment Python package on pypi.org
   - and many others
 
