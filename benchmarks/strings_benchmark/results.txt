@@ -1,0 +1,23 @@
+[*] c90dd4b5d8534aeca0bd871151e705ba.png -> 108.8 KB
+[*] elapsed time: 0.015626[s] (strings_subprocess)
+[*] len(out1)=214
+[*] elapsed time: 0.015626[s] (strings)
+[*] len(out2)=214
+[*] elapsed time: 0.000000[s] (strings_map)
+[*] len(out3)=214
+
+[*] f98d86f96c541b1fcbaf88f4b2e998d8.png -> 1.0 MB
+[*] elapsed time: 0.093757[s] (strings_subprocess)
+[*] len(out1)=5451
+[*] elapsed time: 0.031260[s] (strings)
+[*] len(out2)=5451
+[*] elapsed time: 0.046879[s] (strings_map)
+[*] len(out3)=5451
+
+[*] chrome.DMP -> 320.8 MB
+[*] elapsed time: 28.428975[s] (strings_subprocess)
+[*] len(out1)=1147193
+[*] elapsed time: 9.604111[s] (strings)
+[*] len(out2)=1052573
+[*] elapsed time: 11.271367[s] (strings_map)
+[*] len(out3)=1052573
