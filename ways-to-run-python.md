@@ -26,7 +26,7 @@
     example.py
     ```python
     #!/usr/bin/env python3
-    print('this is example of how script in setup.py works on Linux :)')
+    print('this is example of how scripts defined in setup.py work on Linux :)')
     ```
 
     install & usage
