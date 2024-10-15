@@ -9,6 +9,7 @@ It contains:
   - working with pdf files
   - benchmarks
   - [python-core-concepts](python-core-concepts.md)
+  - [ways-to-run-python](ways-to-run-python.md)
   - tips for deployment Python package on pypi.org
   - and many others
 
