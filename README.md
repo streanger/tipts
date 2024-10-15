@@ -10,7 +10,7 @@ It contains:
   - benchmarks
   - [python-core-concepts](python-core-concepts.md)
   - [ways-to-run-python](ways-to-run-python.md)
-  - tips for deployment Python package on pypi.org
+  - [tips for deployment Python package on pypi.org](pypi_package_tips.md)
   - and many others
 
 ## screen from console histogram, my early application
