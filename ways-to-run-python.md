@@ -12,6 +12,7 @@
 
 ### Linux specific
 1. `script  # specified as script in setup.py, available system-wide`
+
     setup.py
     ```python
     from setuptools import setup
@@ -35,4 +36,4 @@
     example  # system wide usage
     ```
 
-2. `script  # after .deb creation & install, available system-wide`
+3. `script  # after .deb creation & install, available system-wide`
